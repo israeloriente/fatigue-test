@@ -1,0 +1,33 @@
+{
+  "name": "fatigue-test",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "main": "main.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "socat": "socat -d -d pty,raw,echo=0 pty,raw,echo=0",
+    "electron:start": "vite build && electron .",
+    "electron:dev": "concurrently \"vite\" \"npm run electron:start\"",
+    "electron:build": "electron-builder"
+  },
+  "dependencies": {
+    "serialport": "^13.0.0",
+    "three": "^0.172.0",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "@vue/tsconfig": "^0.7.0",
+    "concurrently": "^9.1.2",
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8",
+    "sass-embedded": "^1.83.1",
+    "typescript": "~5.6.2",
+    "vite": "^6.0.5",
+    "vue-tsc": "^2.2.0"
+  }
+}
