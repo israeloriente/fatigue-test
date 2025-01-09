@@ -17,12 +17,12 @@ ipcMain.handle("get-serial-ports", async () => {
 
 app.on("ready", () => {
   mainWindow = new BrowserWindow({
-    width: 800,
-    // maxWidth: 800,
-    // minWidth: 800,
-    // maxHeight: 600,
-    // minHeight: 600,
-    height: 600,
+    width: 1000,
+    // maxWidth: 1000,
+    // minWidth: 1000,
+    // maxHeight: 800,
+    // minHeight: 800,
+    height: 800,
     webPreferences: {
       preload: path.join(path.resolve(), "preload.js"),
       contextIsolation: true,
@@ -41,18 +41,30 @@ ipcMain.handle("open-serial-port", (event, portPath) => {
   // Tratar eventos do SerialPort, como leitura de dados
   let buffer = "";
   port.on("data", (data) => {
-    buffer += data.toString();
-    // Verifique se a mensagem está completa
-    if (buffer.includes("#")) {
-      const message = buffer.split("$")[1].split("#")[0]; // Extrai o conteúdo entre os delimitadores
-      try {
-        const parsedData = JSON.parse(message);
-        mainWindow.webContents.send("serial-data", parsedData);
-      } catch (error) {
-        console.error("Erro ao processar JSON:", error);
-      }
-      buffer = "";
-    }
+    console.log(data);
+
+    // buffer += data.toString();
+    // // mainWindow.webContents.send("test", buffer);
+    // // Verifique se a mensagem está completa
+    // if (buffer.includes("#")) {
+    //   const message = buffer.split("$")[1].split("#")[0]; // Extrai o conteúdo entre os delimitadores
+    //   try {
+    //     const parsedData = JSON.parse(message);
+    //     mainWindow.webContents.send("serial-data", parsedData);
+    //   } catch (error) {
+    //     console.error("Erro ao processar JSON:", error);
+    //   }
+    //   buffer = "";
+    // }
+    // if (buffer.includes("&")) {
+    //   const message = buffer.split("%")[1].split("&")[0]; // Extrai o conteúdo entre os delimitadores
+    //   try {
+    //     mainWindow.webContents.send("serial-data", message);
+    //   } catch (error) {
+    //     console.error("Erro ao processar messagem", error);
+    //   }
+    //   buffer = "";
+    // }
   });
   // Tratar erros do SerialPort
   port.on("error", (err) => {
