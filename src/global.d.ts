@@ -3,13 +3,15 @@ export {};
 declare global {
   interface Window {
     electron: {
-      openArduinoPage: () => void;
-      on(event: string, callback: (val) => void): void;
+      removeAllListeners: (event: string) => void;
     };
     serial: {
       writeSerial: (value: string) => void;
       getSerialPorts: () => Promise<string[]>;
       openSerialPort: (port: string) => promise<string>;
-    }
+      onSerialData: (callback: (data: string) => void) => void;
+      onSerialError: (callback: (error: string) => void) => void;
+      closeSerialPort: () => void;
+    };
   }
 }

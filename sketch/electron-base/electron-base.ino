@@ -1,84 +1,100 @@
-// Definindo as variáveis
-int number_of_cycles = 0;
-float stress_strain = 0.0;
-int life = 0;
-bool motor_status = false;        // Motor 1 - Inicialmente desligado (false)
-bool motor2_status = false;       // Motor 2 - Inicialmente desligado (false)
-bool gyro_sensor_status = false;  // Sensor de giro - Inicialmente desligado (false)
+#include "sensor-carga.h"
 
-void setup() {
+float weight = 0.0;             // Peso da balança
+bool scaleStatus = false;       // Status da balança
+bool motorWeightTurnOn = false; // Motor 1 - Sensor de carga
+bool motorLapTurnOn = false;    // Motor 2 - Motor de passo
+int countOfTurns = 0;           // Quantidade de voltas
+SensorCarga sensorCarga;
+
+void setup()
+{
   // Iniciar comunicação serial
-  Serial.begin(115200);
-
+  Serial.begin(9600);
+  // scaleStatus = sensorCarga.setup();
   // Aguarde a comunicação serial estar pronta
-  while (!Serial) {
-    ;  // Aguarda a conexão da porta serial
+  while (!Serial)
+  {
+    ; // Aguarda a conexão da porta serial
   }
 }
 
-void loop() {
+void loop()
+{
   // Verifica se há dados disponíveis na porta serial
-  if (Serial.available()) {
-    int received_value = Serial.parseInt();  // Lê o valor enviado pela serial
+  if (Serial.available())
+  {
+    String data = Serial.readString(); // Lê o valor enviado pela serial
 
     // Processa os comandos recebidos
-    switch (received_value) {
-      case 1:
-        motor_status = true;  // Liga o motor 1
-        break;
-      case 2:
-        motor_status = false;  // Desliga o motor 1
-        break;
-      case 3:
-        motor2_status = true;  // Liga o motor 2
-        break;
-      case 4:
-        motor2_status = false;  // Desliga o motor 2
-        break;
-      case 5:
-        gyro_sensor_status = true;  // Liga o sensor de giro
-        break;
-      case 6:
-        gyro_sensor_status = false;  // Desliga o sensor de giro
-        break;
-      default:
-        break;  // Ignora qualquer outro valor
+    if (data == "project.start")
+    {
+      motorWeightTurnOn = true;
+      motorLapTurnOn = false;
+      weight = 0.0;
+      countOfTurns = 0;
+    }
+    else if (data == "project.stop")
+    {
+      motorWeightTurnOn = false;
+      motorLapTurnOn = false;
+      weight = 0.0;
+      countOfTurns = 0;
+    }
+    else if (data == "motorLap.start")
+    {
+      motorLapTurnOn = true;
+    }
+    else if (data == "motorLap.stop")
+    {
+      motorLapTurnOn = false;
+    }
+    else if (data == "motorWeight.start")
+    {
+      motorWeightTurnOn = true;
+    }
+    else if (data == "motorWeight.stop")
+    {
+      motorWeightTurnOn = false;
     }
   }
 
-  // Incrementando o number_of_cycles
-  if (number_of_cycles < 420) {
-    number_of_cycles++;
-  } else {
-    number_of_cycles = 0;  // Zera o número de ciclos ao chegar em 420
+  // weight = sensorCarga.getWeight();
+
+  if (countOfTurns < 100 && motorLapTurnOn)
+  {
+    countOfTurns++;
+  }
+  else
+  {
+    countOfTurns = 0; // Zera o número de ciclos ao chegar em 420
   }
 
-  // Incrementando o life
-  if (life < 42) {
-    life++;
-  } else {
-    life = 0;  // Zera o life ao atingir 42
-  }
-
-  // Incrementando o stress_strain
-  if (stress_strain < 10) {
-    stress_strain += 0.3;  // Incrementa de 0.3 em 0.3
-  } else {
-    stress_strain = 0.0;  // Zera o stress_strain ao atingir 10
+  // Incrementando o weight
+  if (weight < 50 && motorWeightTurnOn)
+  {
+    weight += 0.08; // Incrementa de 0.3 em 0.3
+    if (weight > 1)
+    {
+      motorLapTurnOn = true;
+    }
+    if (weight > 5)
+    {
+      motorWeightTurnOn = false;
+    }
   }
 
   // // Formatar os valores em JSON
-  String json = "{\"Number_of_Cycles\": " + String(number_of_cycles) +
-                ", \"Stress_Strain\": " + String(stress_strain, 1) +
-                ", \"Life\": " + String(life) +
-                ", \"Motor_Status\": " + (motor_status ? "true" : "false") +
-                ", \"Motor2_Status\": " + (motor2_status ? "true" : "false") +
-                ", \"Gyro_Sensor_Status\": " + (gyro_sensor_status ? "true" : "false") + "}";
+  String json = "{ \"weight\": " + String(weight, 1) +
+                ", \"motorWeightTurnOn\": " + (motorWeightTurnOn ? "true" : "false") +
+                ", \"motorLapTurnOn\": " + (motorLapTurnOn ? "true" : "false") +
+                ", \"scaleStatus\": " + (scaleStatus ? "true" : "false") +
+                ", \"countOfTurns\": " + String(countOfTurns) + "}";
 
-  Serial.print("$"); 
+  Serial.print("$");
   Serial.print(json);
-  Serial.print("#");
+  Serial.println("#");
 
   // Atraso de 0.4 segundos
-  delay(500);  // Atraso de 400 milissegundos entre as atualizações
+  delay(500); // Atraso de 400 milissegundos entre as atualizações
 }

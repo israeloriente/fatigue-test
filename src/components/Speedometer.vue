@@ -3,13 +3,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
+import { useGlobalStore } from "../stores/useGlobalStore";
+
 const props = defineProps({
   userPref: {
     type: Object,
     default: {},
   },
 });
+const globalStore = useGlobalStore();
 const elm = ref(null);
 const _noOfDev = ref(null);
 const _speedPointerArrow = ref(null);
@@ -32,7 +35,7 @@ const _speedometerProperty = ref({
   nobW: 20,
   nobH: 4,
   numbW: 30,
-  numbH: 16,
+  numbH: 20,
   midNobW: 10,
   midNobH: 3,
   noOfSmallDiv: 2,
@@ -45,7 +48,7 @@ const _speedometerProperty = ref({
   speedValTxtColor: "#fff",
   speedArrowColor: "#48a3cb",
   nobNumbColor: "#eee",
-  widthScale: 0.5,
+  widthScale: 0.6,
 });
 
 onMounted(() => {
@@ -64,6 +67,13 @@ onMounted(() => {
   Array.from(elements).forEach((element) => {
     element.style.transform = `scale(${_speedometerProperty.value.widthScale})`;
   });
+
+  const speedometerRect = speedometer.getBoundingClientRect();
+  const speedometerCntRect = elements[0].getBoundingClientRect();
+  speedometer.style.width = `${speedometerCntRect.width}px`;
+  speedometer.style.height = `${speedometerCntRect.height}px`;
+  elements[0].style.marginLeft = `-${speedometerCntRect.left - speedometerRect.left}px`;
+  elements[0].style.marginTop = `-${speedometerCntRect.top - speedometerRect.top}px`;
 });
 
 const _creatHtmlsElecments = () => {
@@ -314,9 +324,12 @@ const _removeClass = (elm, className) => {
   elm.setAttribute("class", newClass);
 };
 
-defineExpose({
-  setPosition,
-});
+watch(
+  () => globalStore.weight,
+  (newValue, oldValue) => {
+    setPosition(newValue);
+  }
+);
 </script>
 
 <style>

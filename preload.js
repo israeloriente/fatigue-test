@@ -1,12 +1,14 @@
 const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("electron", {
-  openArduinoPage: () => ipcRenderer.send("open-arduino-page"),
-  on: (channel, callback) => ipcRenderer.on(channel, (event, data) => callback(data)),
+  removeAllListeners: (channel) => ipcRenderer.removeAllListeners(channel),
 });
 
 contextBridge.exposeInMainWorld("serial", {
-  writeSerial: (value) => ipcRenderer.send("write-serial", value),
   getSerialPorts: () => ipcRenderer.invoke("get-serial-ports"),
+  writeSerial: (data) => ipcRenderer.send("write-serial", data),
   openSerialPort: (portPath) => ipcRenderer.invoke('open-serial-port', portPath),
+  onSerialData: (callback) => ipcRenderer.on("serial-data", (event, data) => callback(data)),
+  onSerialError: (callback) => ipcRenderer.on("serial-error", (event, error) => callback(error)),
+  closeSerialPort: () => ipcRenderer.send("close-serial-port"),
 });
