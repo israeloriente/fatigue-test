@@ -4,7 +4,7 @@
     <div class="links">
       <router-link to="/">Home</router-link>
       <router-link to="/about">About</router-link>
-      <router-link to="/config">Config</router-link>
+      <!-- <router-link to="/config">Config</router-link> -->
     </div>
   </div>
 </template>
@@ -19,6 +19,8 @@ export default {
           return "Home Page";
         case "/about":
           return "About Page";
+        case "/config":
+          return "Config";
         default:
           return "Home";
       }

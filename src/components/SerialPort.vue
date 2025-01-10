@@ -6,7 +6,7 @@
       <p class="mt-3 icon" title="Atualizar Lista" @click="loadSerialPorts()">🔁</p>
     </div>
   </div>
-  <select class="form-select mb-3" v-model="selectedPort" @change="selectPort()">
+  <select class="form-select mb-3" v-model="globalStore.arduinoPort" @change="selectPort()">
     <option v-for="port in serialPorts" :key="port" :value="port">
       {{ port }}
     </option>
@@ -16,13 +16,14 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { useGlobalStore } from "../stores/useGlobalStore";
+import GlobalService from "../services/global.service";
 
 const serialPorts = ref<string[]>([]);
-const selectedPort = ref<string>("");
 const globalStore = useGlobalStore();
 
 onMounted(() => {
   loadSerialPorts();
+  globalStore.setArduinoPort(GlobalService.getStorage("config.arduinoPort"));
 });
 
 const loadSerialPorts = async () => {
@@ -34,9 +35,10 @@ const loadSerialPorts = async () => {
 };
 const selectPort = async () => {
   try {
-    const result = await window.serial.openSerialPort(selectedPort.value);
-    globalStore.setArduinoPort(selectedPort.value);
+    const result = await window.serial.openSerialPort(globalStore.arduinoPort);
+    globalStore.setArduinoPort(globalStore.arduinoPort);
     globalStore.addLog(result);
+    GlobalService.setStorage("config.arduinoPort", globalStore.arduinoPort);
   } catch (error) {
     console.error("Erro ao abrir a porta serial:", error);
   }
@@ -46,7 +48,6 @@ const closePort = async () => {
   try {
     window.serial.closeSerialPort();
     globalStore.setArduinoPort("");
-    selectedPort.value = "";
   } catch (error) {
     console.error("Erro ao fechar a porta serial:", error);
   }

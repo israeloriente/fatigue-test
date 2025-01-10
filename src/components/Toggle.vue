@@ -87,6 +87,16 @@ input:checked + .slider:before {
   transform: translateX(13px);
 }
 
+input:disabled + .slider {
+  background-color: #e0e0e0;
+  cursor: not-allowed;
+}
+
+input:disabled + .slider:before {
+  background-color: #b0b0b0;
+  transform: translateX(0);
+}
+
 .slider.round {
   border-radius: 34px;
 }
