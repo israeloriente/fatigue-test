@@ -1,6 +1,6 @@
 <template>
   <label class="switch">
-    <input type="checkbox" v-model="localValue" @click="changed()" />
+    <input type="checkbox" v-model="localValue" :disabled="disabled" @click="changed()" />
     <span class="slider round"></span>
   </label>
 </template>
@@ -10,7 +10,7 @@ import { ref, watch } from "vue";
 
 // Defina as propriedades e eventos
 const emit = defineEmits(["changed"]);
-const props = defineProps({ value: Boolean });
+const props = defineProps({ value: Boolean, disabled: Boolean });
 const localValue = ref(props.value);
 
 // Sincronize o valor local com as mudanças nas props

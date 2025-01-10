@@ -13,6 +13,7 @@
             type="button"
             class="btn btn-primary btn-sm ms-auto buttonColorBlue button"
             @click="start()"
+            :disabled="globalStore.arduinoPort === ''"
           >
             Iniciar
           </button>

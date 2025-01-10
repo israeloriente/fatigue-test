@@ -3,15 +3,25 @@
   <ul class="list-group">
     <li class="item list-group-item d-flex justify-content-between align-items-center">
       <p class="label">{{ "Motor de passo" }}</p>
-      <Toggle :value="globalStore.motorLapTurnOn" @changed="motorGiroChanged" ref="motorLapTurnOn" />
+      <Toggle
+        :disabled="arduinoPortIsEmpty"
+        :value="globalStore.motorLapTurnOn"
+        @changed="motorGiroChanged"
+        ref="motorLapTurnOn"
+      />
     </li>
     <li class="item list-group-item d-flex justify-content-between align-items-center">
       <p class="label">{{ "Sentido da rotação (Horário)" }}</p>
-      <Toggle />
+      <Toggle :disabled="arduinoPortIsEmpty" />
     </li>
     <li class="item list-group-item d-flex justify-content-between align-items-center">
       <p class="label">{{ "Sensor de carga" }}</p>
-      <Toggle :value="globalStore.motorWeightTurnOn" @changed="motorWeightChanged" ref="motorWeightTurnOn" />
+      <Toggle
+        :disabled="arduinoPortIsEmpty"
+        :value="globalStore.motorWeightTurnOn"
+        @changed="motorWeightChanged"
+        ref="motorWeightTurnOn"
+      />
     </li>
   </ul>
 </template>
@@ -19,7 +29,7 @@
 <script setup lang="ts">
 import Toggle from "./Toggle.vue";
 import { useGlobalStore } from "../stores/useGlobalStore";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
 const globalStore = useGlobalStore();
 const motorLapTurnOn = ref<typeof Toggle | null>(null);
@@ -61,6 +71,10 @@ const motorWeightChanged = (value: boolean) => {
     }, 2000);
   }
 };
+
+const arduinoPortIsEmpty = computed(() => {
+  return globalStore.arduinoPort === "";
+});
 </script>
 
 <style scoped lang="scss">
