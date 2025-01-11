@@ -1,9 +1,9 @@
 <template>
   <div class="list-group-item d-flex justify-content-between align-items-center">
-    <p class="title">Selecione a porta serial</p>
+    <p class="title">{{ $t("home.serialPort.title") }}</p>
     <div class="ms-auto d-flex gap-2">
-      <p class="mt-3 icon" title="Desconectar Porta Serial" @click="closePort()">❌</p>
-      <p class="mt-3 icon" title="Atualizar Lista" @click="loadSerialPorts()">🔁</p>
+      <p class="mt-3 icon" :title="getTitleIconClose" @click="closePort()">❌</p>
+      <p class="mt-3 icon" :title="getTitleIconUpdate" @click="loadSerialPorts()">🔁</p>
     </div>
   </div>
   <select class="form-select mb-2" v-model="globalStore.arduinoPort" @change="selectPort()">
@@ -18,23 +18,26 @@
       :disabled="globalStore.arduinoPort === ''"
       @click="selectPort()"
     >
-      Conectar
+      {{ $t("home.serialPort.button") }}
     </button>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useGlobalStore } from "../stores/useGlobalStore";
 import GlobalService from "../services/global.service";
+import { useI18n } from "vue-i18n";
 
 const serialPorts = ref<string[]>([]);
 const globalStore = useGlobalStore();
+const { t } = useI18n();
 
 onMounted(() => {
-  loadSerialPorts();
-  globalStore.setArduinoPort(GlobalService.getStorage("config.arduinoPort"));
-  if (globalStore.arduinoPort) selectPort();
+  loadSerialPorts().then(() => {
+    globalStore.setArduinoPort(GlobalService.getStorage("config.arduinoPort"));
+    if (serialPorts.value.includes(globalStore.arduinoPort)) selectPort();
+  });
 });
 
 const loadSerialPorts = async () => {
@@ -46,9 +49,9 @@ const loadSerialPorts = async () => {
 };
 const selectPort = async () => {
   try {
-    const result = await window.serial.openSerialPort(globalStore.arduinoPort);
+    window.serial.openSerialPort(globalStore.arduinoPort);
     globalStore.setArduinoPort(globalStore.arduinoPort);
-    globalStore.addLog({ type: "success", message: result });
+    window.serial.writeSerial("arduino.setup");
     GlobalService.setStorage("config.arduinoPort", globalStore.arduinoPort);
   } catch (error) {
     console.error("Erro ao abrir a porta serial:", error);
@@ -57,13 +60,22 @@ const selectPort = async () => {
 
 const closePort = async () => {
   try {
-    window.serial.closeSerialPort();
-    globalStore.setArduinoPort("");
-    globalStore.setProcessItsRunning(false);
+    if (globalStore.arduinoPort !== "") {
+      window.serial.closeSerialPort();
+      globalStore.setArduinoPort("");
+      globalStore.setProcessItsRunning(false);
+    }
   } catch (error) {
     console.error("Erro ao fechar a porta serial:", error);
   }
 };
+
+const getTitleIconClose = computed(() => {
+  return t("home.serialPort.icons.close");
+});
+const getTitleIconUpdate = computed(() => {
+  return t("home.serialPort.icons.update");
+});
 </script>
 
 <style scoped lang="scss">

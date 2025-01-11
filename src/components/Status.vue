@@ -1,5 +1,5 @@
 <template>
-  <p class="title">Status</p>
+  <p class="title">{{ $t("home.status.title") }}</p>
 
   <div>
     <span
@@ -8,11 +8,11 @@
         green: arduinoPortIsConnected,
       }"
     ></span>
-    <span> Porta Serial</span>
+    <span> {{ $t("home.status.serialPort") }} </span>
   </div>
   <div>
     <span class="buttons fakeClose" v-bind:class="{ green: globalStore.scaleStatus }"></span>
-    <span> Balança </span>
+    <span> {{ $t("home.status.scale") }} </span>
   </div>
   <div>
     <span
@@ -22,7 +22,7 @@
         yellow: isLoadingLap,
       }"
     ></span>
-    <span> Motor de Passo </span>
+    <span> {{ $t("home.status.motorLap") }} </span>
   </div>
   <div>
     <span
@@ -32,7 +32,7 @@
         yellow: isLoadingWeight,
       }"
     ></span>
-    <span> Sensor de Carga </span>
+    <span> {{ $t("home.status.motorWeight") }} </span>
   </div>
 </template>
 

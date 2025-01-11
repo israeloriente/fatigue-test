@@ -1,7 +1,7 @@
 <template>
-  <p class="title">Dados de entrada</p>
+  <p class="title">{{ $t("home.inputData.title") }}</p>
   <div class="input-group mb-2">
-    <span class="input-group-text" id="basic-addon1">Sut do corpo de prova (MPa)</span>
+    <span class="input-group-text" id="basic-addon1">{{ $t("home.inputData.inputSut") }}</span>
     <input
       type="text"
       class="form-control"
@@ -12,7 +12,7 @@
     />
   </div>
   <div class="input-group mb-2">
-    <span class="input-group-text" id="basic-addon1">Carga aplicada (MPa)</span>
+    <span class="input-group-text" id="basic-addon1">{{ $t("home.inputData.inputLoad") }}</span>
     <input
       type="text"
       class="form-control"

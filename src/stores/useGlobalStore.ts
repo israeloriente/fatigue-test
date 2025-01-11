@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { i18n } from "../main";
 
 export const useGlobalStore = defineStore("global", {
   state: () => ({
@@ -13,7 +14,8 @@ export const useGlobalStore = defineStore("global", {
       weight: false,
       lap: false,
     },
-    processItsRunning: false
+    processItsRunning: false,
+    currentLanguage: "en",
   }),
 
   getters: {
@@ -53,13 +55,17 @@ export const useGlobalStore = defineStore("global", {
     setProcessItsRunning(value: boolean) {
       this.processItsRunning = value;
     },
+    changeLanguage(language: "en" | "pt") {
+      this.currentLanguage = language;
+    },
     resetAll() {
       this.weight = 0;
       this.countOfTurns = 0;
     },
     addLog(log: { type: "error" | "success" | "info"; message: string }) {
       const timestamp = new Date().toLocaleTimeString();
-      this.logs += `[${timestamp}] <span class="${log.type}"> ${log.message} </span>\n`;
+      const t = i18n.global.t;
+      this.logs += `[${timestamp}] <span class="${log.type}"> ${t(log.message)} </span>\n`;
     },
     cleanLogs() {
       this.logs = "";

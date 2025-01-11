@@ -1,8 +1,8 @@
 <template>
-  <p class="title">Controles</p>
+  <p class="title">{{ $t("config.title") }}</p>
   <ul class="list-group">
     <li class="item list-group-item d-flex justify-content-between align-items-center">
-      <p class="label">{{ "Motor de passo" }}</p>
+      <p class="label">{{ $t("home.controls.motorLap") }}</p>
       <Toggle
         :disabled="arduinoPortIsEmpty"
         :value="globalStore.motorLapTurnOn"
@@ -11,11 +11,11 @@
       />
     </li>
     <li class="item list-group-item d-flex justify-content-between align-items-center">
-      <p class="label">{{ "Sentido da rotação (Horário)" }}</p>
+      <p class="label">{{ $t("home.controls.directionRotation") }}</p>
       <Toggle :disabled="arduinoPortIsEmpty" />
     </li>
     <li class="item list-group-item d-flex justify-content-between align-items-center">
-      <p class="label">{{ "Sensor de carga" }}</p>
+      <p class="label">{{ $t("home.controls.motorWeight") }}</p>
       <Toggle
         :disabled="arduinoPortIsEmpty"
         :value="globalStore.motorWeightTurnOn"

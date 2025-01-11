@@ -1,0 +1,69 @@
+{
+  "global": {
+    "restarting": "Restarting...",
+    "errorListingSerialPorts": "Error listing serial ports"
+  },
+  "arduino": {
+    "arduinoConnected": "Arduino connected",
+    "loadCellMotorActivated": "Load Cell Motor Activated",
+    "processInterrupted": "Process Interrupted",
+    "loadMotorTurnedOn": "Load Motor Turned On",
+    "loadMotorTurnedOff": "Load Motor Turned Off",
+    "lapMotorTurnedOn": "Stepper Motor Turned On",
+    "lapMotorTurnedOff": "Stepper Motor Turned Off"
+  },
+  "toolbar": {
+    "home": "Home",
+    "about": "About",
+    "settings": "Settings"
+  },
+  "home": {
+    "serialPort": {
+      "title": "Select a serial port",
+      "icons": {
+        "close": "Disconnect serial port",
+        "update": "Update List"
+      },
+      "button": "Connect"
+    },
+    "inputData": {
+      "title": "Input Data",
+      "inputSut": "Sut of the specimen (MPa)",
+      "inputLoad": "Applied load (MPa)"
+    },
+    "startButton": "Start",
+    "abortButton": "Abort",
+    "controls": {
+      "directionRotation": "Direction rotation (Clockwise)",
+      "motorLap": "Stepper motor",
+      "motorWeight": "Load cell motor"
+    },
+    "status": {
+      "title": "Status",
+      "serialPort": " Serial Port",
+      "scale": " Scale",
+      "motorLap": " Stepper motor",
+      "motorWeight": " Load cell motor"
+    },
+    "results": {
+      "title": "Results",
+      "theoreticalLife": "Theoretical life",
+      "testDuration": "Test duration",
+      "life": "Life",
+      "error": "Error",
+      "turnCount": "Number of turns"
+    },
+    "chart": {
+      "label": "Weight (kg)",
+      "scalesX": "Turn Count",
+      "scalesY": "Weight (kg)"
+    }
+  },
+  "about": {},
+  "config": {
+    "title": "Controls",
+    "languageTitle": "Language",
+    "languageEnglish": "English",
+    "languagePortuguese": "Portuguese"
+  }
+}

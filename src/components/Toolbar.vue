@@ -2,9 +2,9 @@
   <div class="toolbar">
     <h1>{{ title }}</h1>
     <div class="links">
-      <router-link to="/">Home</router-link>
-      <router-link to="/about">About</router-link>
-      <!-- <router-link to="/config">Config</router-link> -->
+      <router-link to="/"> {{ $t("toolbar.home") }} </router-link>
+      <router-link to="/about"> {{ $t("toolbar.about") }} </router-link>
+      <router-link to="/config"> {{ $t("toolbar.settings") }} </router-link>
     </div>
   </div>
 </template>

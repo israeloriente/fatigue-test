@@ -1,6 +1,13 @@
 <template>
   <ul class="list-group" style="padding: 3%">
     <li class="item list-group-item d-flex justify-content-between align-items-center">
+      <p class="label">{{ $t("config.languageTitle") }}</p>
+      <select class="form-select w-25" @change="changeLanguage($event)" :value="globalStore.currentLanguage">
+        <option key="pt" value="pt">{{ $t("config.languagePortuguese") }}</option>
+        <option key="en" value="en">{{ $t("config.languageEnglish") }}</option>
+      </select>
+    </li>
+    <!-- <li class="item list-group-item d-flex justify-content-between align-items-center">
       <p class="label">{{ `Valor padrão para "sut do corpo de prova"` }}</p>
       <input
         type="text"
@@ -29,7 +36,7 @@
     <li class="item list-group-item d-flex justify-content-between align-items-center">
       <p class="label">{{ "Sensor de carga" }}</p>
       <Toggle />
-    </li>
+    </li> -->
   </ul>
 </template>
 
@@ -37,8 +44,12 @@
 import { onMounted, ref } from "vue";
 import Toggle from "../components/Toggle.vue";
 import GlobalService from "../services/global.service";
+import { useGlobalStore } from "../stores/useGlobalStore";
+import { useI18n } from "vue-i18n";
 
 const config = ref<any>({});
+const { locale } = useI18n();
+const globalStore = useGlobalStore();
 
 onMounted(() => {
   const { defaultSutCorpo, defaultCargaAplicada } = GlobalService.getStorage("config");
@@ -51,6 +62,12 @@ const saveSutCorpoOnStorage = (ev: any) => {
 };
 const saveCargaAplicadaOnStorage = (ev: any) => {
   GlobalService.setStorage("config.defaultCargaAplicada", ev.target.value);
+};
+
+const changeLanguage = (event: any) => {
+  locale.value = event.target.value;
+  globalStore.changeLanguage(event.target.value);
+  GlobalService.setStorage("config.defaultLanguage", event.target.value);
 };
 </script>
 

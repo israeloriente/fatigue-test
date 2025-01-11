@@ -3,11 +3,13 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, watch } from "vue";
+import { computed, onMounted, watch } from "vue";
 import Chart from "chart.js/auto";
 import { useGlobalStore } from "../stores/useGlobalStore";
+import { useI18n } from "vue-i18n";
 
 const globalStore = useGlobalStore();
+const { t } = useI18n();
 
 const id = "weightVsTurnsChart-" + Math.random().toString(36).substr(2, 9);
 
@@ -24,7 +26,7 @@ onMounted(() => {
         labels: [], // Contagem de voltas (exemplo)
         datasets: [
           {
-            label: "Peso (kg)",
+            label: getLabelName.value,
             data: [], // Peso (kg) (exemplo)
             borderColor: "rgb(72, 163, 203)",
             backgroundColor: "rgb(72, 163, 203, 0.2)",
@@ -39,13 +41,13 @@ onMounted(() => {
           x: {
             title: {
               display: true,
-              text: "Contagem de Voltas",
+              text: getscalesX.value,
             },
           },
           y: {
             title: {
               display: true,
-              text: "Peso (kg)",
+              text: getscalesY.value,
             },
           },
         },
@@ -59,6 +61,16 @@ const resetChart = () => {
   chartInstance.data.labels = [];
   chartInstance.update();
 };
+
+const getLabelName = computed(() => {
+  return t("home.chart.label");
+});
+const getscalesX = computed(() => {
+  return t("home.chart.scalesX");
+});
+const getscalesY = computed(() => {
+  return t("home.chart.scalesY");
+});
 
 watch(
   () => globalStore.weight,

@@ -19,7 +19,7 @@ void startProject()
 	motorLapTurnOn = false;
 	weight = 0.0;
 	countOfTurns = 0;
-	log("info", "Sensor de carga ativado");
+	log("info", "arduino.loadCellMotorActivated");
 }
 
 void stopProject()
@@ -28,13 +28,13 @@ void stopProject()
 	motorLapTurnOn = false;
 	weight = 0.0;
 	countOfTurns = 0;
-	log("info", "Processo Interrompido");
+	log("info", "arduino.processInterrupted");
 }
 
 void turnOnMotorWeight()
 {
 	motorWeightTurnOn = true;
-	log("info", "Motor de carga ligado");
+	log("info", "arduino.loadMotorTurnedOn");
 }
 
 void turnOffMotorWeight()
@@ -42,7 +42,7 @@ void turnOffMotorWeight()
 	if (motorWeightTurnOn == true)
 	{
 		motorWeightTurnOn = false;
-		log("info", "Motor de carga desligado");
+		log("info", "arduino.loadMotorTurnedOff");
 	}
 }
 
@@ -51,12 +51,12 @@ void turnOnMotorLap()
 	if (motorLapTurnOn == false)
 	{
 		motorLapTurnOn = true;
-		log("info", "Motor de passo ligado");
+		log("info", "arduino.lapMotorTurnedOn");
 	}
 }
 
 void turnOffMotorLap()
 {
 	motorLapTurnOn = false;
-	log("info", "Motor de passo desligado");
+	log("info", "arduino.lapMotorTurnedOff");
 }

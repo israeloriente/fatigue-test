@@ -11,7 +11,7 @@
             class="btn btn-danger btn-sm ms-auto button"
             @click="abort()"
           >
-            Abortar
+            {{ $t("home.abortButton") }}
           </button>
           <button
             v-if="!globalStore.processItsRunning"
@@ -20,7 +20,7 @@
             @click="start()"
             :disabled="globalStore.arduinoPort === ''"
           >
-            Iniciar
+            {{ $t("home.startButton") }}
           </button>
         </div>
       </div>
@@ -99,7 +99,7 @@ const setupSerialHandlers = () => {
     globalStore.addLog(data);
   };
   serialErrorHandler = (data: any) => {
-    globalStore.addLog({ type: "error", message: JSON.stringify(data) });
+    globalStore.addLog({ type: "error", message: data });
   };
   window.serial.onSerialData(serialDataHandler);
   window.serial.onSerialLog(serialLogHandler);
@@ -114,6 +114,10 @@ onUnmounted(() => {
   if (serialErrorHandler) {
     window.electron.removeAllListeners("serial-error");
     serialErrorHandler = null;
+  }
+  if (serialLogHandler) {
+    window.electron.removeAllListeners("serial-log");
+    serialLogHandler = null;
   }
 });
 </script>

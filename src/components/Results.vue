@@ -1,25 +1,25 @@
 <template>
   <div class="result">
-    <p class="title text-center">Resultados</p>
+    <p class="title text-center">{{ $t("home.results.title") }}</p>
     <ul class="list-group">
       <li class="item list-group-item d-flex justify-content-between align-items-center">
-        <span class="label">Vida teórica</span>
+        <span class="label">{{ $t("home.results.theoreticalLife") }}</span>
         <span>0</span>
       </li>
       <li class="item list-group-item d-flex justify-content-between align-items-center">
-        <span class="label">Duração do ensaio</span>
+        <span class="label">{{ $t("home.results.testDuration") }}</span>
         <span>0</span>
       </li>
       <li class="item list-group-item d-flex justify-content-between align-items-center">
-        <span class="label">Vida</span>
+        <span class="label">{{ $t("home.results.life") }}</span>
         <span>0</span>
       </li>
       <li class="item list-group-item d-flex justify-content-between align-items-center">
-        <span class="label">Erro</span>
+        <span class="label">{{ $t("home.results.error") }}</span>
         <span>0</span>
       </li>
       <li class="item list-group-item d-flex justify-content-between align-items-center">
-        <span class="label">Contagem de voltas</span>
+        <span class="label">{{ $t("home.results.turnCount") }}</span>
         <span>{{ globalStore.countOfTurns }}</span>
       </li>
     </ul>
@@ -30,7 +30,6 @@
 import { useGlobalStore } from "../stores/useGlobalStore";
 
 const globalStore = useGlobalStore();
-
 </script>
 
 <style scoped lang="scss">

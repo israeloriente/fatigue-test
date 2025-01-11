@@ -27,7 +27,7 @@ ipcMain.handle("get-serial-ports", async () => {
     const ports = await SerialPort.list();
     return ports.map((port) => port.path);
   } catch (error) {
-    console.error("Erro ao listar as portas seriais:", error);
+    mainWindow.webContents.send("serial-error", "global.errorListingSerialPorts");
     return [];
   }
 });
@@ -47,36 +47,31 @@ ipcMain.handle("open-serial-port", (event, portPath) => {
   port.on("data", (data) => {
     bufferJson += data.toString();
     if (bufferJson.includes("#")) {
-      const message = bufferJson.split("$")[1].split("#")[0];
       try {
+        const message = bufferJson.split("$")[1].split("#")[0];
         const parsedData = JSON.parse(message);
         mainWindow.webContents.send("serial-data", parsedData);
-      } catch (error) {
-        console.error("Erro ao processar JSON:", error);
-        mainWindow.webContents.send("serial-error", error);
-      }
+      } catch (error) {}
       bufferJson = "";
     }
   });
   port.on("data", (data) => {
     buffer += data.toString();
     if (buffer.includes("%")) {
-      const message = buffer.split("&")[1].split("%")[0];
       try {
+        const message = buffer.split("&")[1].split("%")[0];
         const parsedData = JSON.parse(message);
         mainWindow.webContents.send("serial-log", parsedData);
-      } catch (error) {
-        console.error("Erro ao processar JSON:", error);
-        mainWindow.webContents.send("serial-error", error);
-      }
+      } catch (error) {}
       buffer = "";
     }
   });
   port.on("error", (err) => {
-    console.error("Erro na porta serial:", err);
     mainWindow.webContents.send("serial-error", err.message);
+    mainWindow.webContents.send("serial-log", { type: "info", message: "global.restarting" });
+    mainWindow.webContents.send("write-serial", "arduino.setup");
   });
-  return "Porta serial selecionada com sucesso";
+  return true;
 });
 
 ipcMain.on("close-serial-port", (event, value) => {

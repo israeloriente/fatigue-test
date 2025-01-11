@@ -1,0 +1,69 @@
+{
+  "global": {
+    "restarting": "Reniciando...",
+    "errorListingSerialPorts": "Error ao mostrar as portas seriais"
+  },
+  "arduino": {
+    "arduinoConnected": "Arduino conectado com sucesso",
+    "loadCellMotorActivated": "Motor de carga ativado",
+    "processInterrupted": "Processo interrompido",
+    "loadMotorTurnedOn": "Motor de carga ligado",
+    "loadMotorTurnedOff": "Motor de carga desligado",
+    "lapMotorTurnedOn": "Motor de passo ligado",
+    "lapMotorTurnedOff": "Motor de passo desligado"
+  },
+  "toolbar": {
+    "home": "Início",
+    "about": "Sobre",
+    "settings": "Configurações"
+  },
+  "home": {
+    "serialPort": {
+      "title": "Selecione uma porta serial",
+      "icons": {
+        "close": "Desconectar porta serial",
+        "update": "Atualizar lista de portas"
+      },
+      "button": "Conectar"
+    },
+    "inputData": {
+      "title": "Dados de entrada",
+      "inputSut": "Sut do corpo de prova (MPa)",
+      "inputLoad": "Carga aplicada (MPa)"
+    },
+    "startButton": "Começar",
+    "abortButton": "Abortar",
+    "controls": {
+      "directionRotation": "Direção de rotação (Horário)",
+      "motorLap": "Motor de passo",
+      "motorWeight": "Motor de carga"
+    },
+    "status": {
+      "title": "Status",
+      "serialPort": " Porta serial",
+      "scale": " Célula de carga",
+      "motorLap": " Motor de passo",
+      "motorWeight": " Motor de carga"
+    },
+    "results": {
+      "title": "Resultados",
+      "theoreticalLife": "Vida teórica",
+      "testDuration": "Duração do ensaio",
+      "life": "Vida",
+      "error": "Erro",
+      "turnCount": "Contagem de voltas"
+    },
+    "chart": {
+      "label": "Peso (kg)",
+      "scalesX": "Contagem de voltas",
+      "scalesY": "Peso (kg)"
+    }
+  },
+  "about": {},
+  "config": {
+    "title": "Controles",
+    "languageTitle": "Idioma",
+    "languageEnglish": "Inglês",
+    "languagePortuguese": "Português"
+  }
+}

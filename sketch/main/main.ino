@@ -18,8 +18,7 @@ void setup()
   {
     ; // Aguarda a conexão da porta serial
   }
-  delay(1000);
-  log("success", "Serial monitor conectado");
+  log("success", "arduino.arduinoConnected");
 }
 
 void loop()
@@ -30,7 +29,11 @@ void loop()
     String data = Serial.readString(); // Lê o valor enviado pela serial
 
     // Processa os comandos recebidos
-    if (data == "project.start")
+    if (data == "arduino.setup")
+    {
+      setup();
+    }
+    else if (data == "project.start")
     {
       startProject();
     }
