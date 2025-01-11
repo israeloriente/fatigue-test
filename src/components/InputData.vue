@@ -1,25 +1,23 @@
 <template>
   <p class="title">Dados de entrada</p>
-  <div class="input-group mb-3">
+  <div class="input-group mb-2">
     <span class="input-group-text" id="basic-addon1">Sut do corpo de prova (MPa)</span>
     <input
       type="text"
       class="form-control"
       v-model="sutCorpo"
       placeholder="150"
-      aria-label="Username"
       aria-describedby="basic-addon1"
       v-on:focusout="saveSutCorpoOnStorage"
     />
   </div>
-  <div class="input-group mb-3">
+  <div class="input-group mb-2">
     <span class="input-group-text" id="basic-addon1">Carga aplicada (MPa)</span>
     <input
       type="text"
       class="form-control"
       v-model="cargaAplicada"
       placeholder="150"
-      aria-label="Username"
       aria-describedby="basic-addon1"
       v-on:focusout="saveCargaAplicadaOnStorage"
     />

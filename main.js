@@ -42,14 +42,29 @@ ipcMain.handle("open-serial-port", (event, portPath) => {
   }
 
   port = new SerialPort({ path: portPath, baudRate: 9600 });
+  let bufferJson = "";
   let buffer = "";
   port.on("data", (data) => {
-    buffer += data.toString();
-    if (buffer.includes("#")) {
-      const message = buffer.split("$")[1].split("#")[0];
+    bufferJson += data.toString();
+    if (bufferJson.includes("#")) {
+      const message = bufferJson.split("$")[1].split("#")[0];
       try {
         const parsedData = JSON.parse(message);
         mainWindow.webContents.send("serial-data", parsedData);
+      } catch (error) {
+        console.error("Erro ao processar JSON:", error);
+        mainWindow.webContents.send("serial-error", error);
+      }
+      bufferJson = "";
+    }
+  });
+  port.on("data", (data) => {
+    buffer += data.toString();
+    if (buffer.includes("%")) {
+      const message = buffer.split("&")[1].split("%")[0];
+      try {
+        const parsedData = JSON.parse(message);
+        mainWindow.webContents.send("serial-log", parsedData);
       } catch (error) {
         console.error("Erro ao processar JSON:", error);
         mainWindow.webContents.send("serial-error", error);

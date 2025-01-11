@@ -5,8 +5,8 @@
       <div class="fakeButtons fakeMinimize"></div>
       <div class="fakeButtons fakeZoom"></div>
     </div>
-    <div class="fakeScreen">
-      <textarea v-model="logs" ref="logTerminal" readonly name="" id=""></textarea>
+    <div class="fakeScreen" ref="logTerminal">
+      <p class="log-output" v-html="logs"></p>
     </div>
   </div>
 </template>
@@ -34,6 +34,20 @@ watch(
   }
 );
 </script>
+
+<style lang="scss">
+.error {
+  color: rgb(255, 96, 96);
+}
+
+.success {
+  color: rgb(88, 255, 88);
+}
+
+.info {
+  color: white;
+}
+</style>
 
 <style scoped lang="scss">
 .terminal {
@@ -85,13 +99,16 @@ watch(
   height: 80%;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
+  overflow: hidden;
+  overflow-y: auto;
 
-  textarea {
-    background-color: transparent;
-    height: 100%;
+  .log-output {
+    padding: 3px;
+    height: 90%;
     width: 100%;
     color: #e3e3e3;
     font-size: 10px;
+    white-space: pre-wrap;
   }
 }
 

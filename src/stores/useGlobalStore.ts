@@ -13,6 +13,7 @@ export const useGlobalStore = defineStore("global", {
       weight: false,
       lap: false,
     },
+    processItsRunning: false
   }),
 
   getters: {
@@ -49,14 +50,16 @@ export const useGlobalStore = defineStore("global", {
     setScaleStatus(value: boolean) {
       this.scaleStatus = value;
     },
+    setProcessItsRunning(value: boolean) {
+      this.processItsRunning = value;
+    },
     resetAll() {
       this.weight = 0;
       this.countOfTurns = 0;
-      this.logs = "";
     },
-    addLog(message: string) {
+    addLog(log: { type: "error" | "success" | "info"; message: string }) {
       const timestamp = new Date().toLocaleTimeString();
-      this.logs += `[${timestamp}] ${message}\n`;
+      this.logs += `[${timestamp}] <span class="${log.type}"> ${log.message} </span>\n`;
     },
     cleanLogs() {
       this.logs = "";

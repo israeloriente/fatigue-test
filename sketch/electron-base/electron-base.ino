@@ -1,4 +1,5 @@
 #include "sensor-carga.h"
+#include "utils.h"
 
 float weight = 0.0;             // Peso da balança
 bool scaleStatus = false;       // Status da balança
@@ -17,6 +18,8 @@ void setup()
   {
     ; // Aguarda a conexão da porta serial
   }
+  delay(1000);
+  log("success", "Serial monitor conectado");
 }
 
 void loop()
@@ -29,33 +32,27 @@ void loop()
     // Processa os comandos recebidos
     if (data == "project.start")
     {
-      motorWeightTurnOn = true;
-      motorLapTurnOn = false;
-      weight = 0.0;
-      countOfTurns = 0;
+      startProject();
     }
     else if (data == "project.stop")
     {
-      motorWeightTurnOn = false;
-      motorLapTurnOn = false;
-      weight = 0.0;
-      countOfTurns = 0;
+      stopProject();
     }
     else if (data == "motorLap.start")
     {
-      motorLapTurnOn = true;
+      turnOnMotorLap();
     }
     else if (data == "motorLap.stop")
     {
-      motorLapTurnOn = false;
+      turnOffMotorLap();
     }
     else if (data == "motorWeight.start")
     {
-      motorWeightTurnOn = true;
+      turnOnMotorWeight();
     }
     else if (data == "motorWeight.stop")
     {
-      motorWeightTurnOn = false;
+      turnOffMotorWeight();
     }
   }
 
@@ -76,11 +73,11 @@ void loop()
     weight += 0.08; // Incrementa de 0.3 em 0.3
     if (weight > 1)
     {
-      motorLapTurnOn = true;
+      turnOnMotorLap();
     }
     if (weight > 5)
     {
-      motorWeightTurnOn = false;
+      turnOffMotorWeight();
     }
   }
 

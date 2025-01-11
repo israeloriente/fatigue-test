@@ -5,11 +5,16 @@
       <InputData />
       <div class="list-group-item d-flex justify-content-between align-items-center">
         <div class="ms-auto d-flex gap-2">
-          <button v-if="isTurnOn" type="button" class="btn btn-danger btn-sm ms-auto button" @click="abort()">
+          <button
+            v-if="globalStore.processItsRunning"
+            type="button"
+            class="btn btn-danger btn-sm ms-auto button"
+            @click="abort()"
+          >
             Abortar
           </button>
           <button
-            v-if="!isTurnOn"
+            v-if="!globalStore.processItsRunning"
             type="button"
             class="btn btn-primary btn-sm ms-auto buttonColorBlue button"
             @click="start()"
@@ -51,21 +56,21 @@ import Results from "../components/Results.vue";
 
 const globalStore = useGlobalStore();
 const weightVsTurnsChart = ref<typeof WeightVsTurnsChart | null>(null);
-const isTurnOn = ref(false);
 let serialDataHandler: ((data: any) => void) | null = null;
 let serialErrorHandler: ((data: any) => void) | null = null;
+let serialLogHandler: ((data: any) => void) | null = null;
 
 onMounted(() => {
-  isTurnOn.value = globalStore.motorWeightTurnOn || globalStore.motorLapTurnOn;
+  globalStore.setProcessItsRunning(globalStore.motorWeightTurnOn || globalStore.motorLapTurnOn);
   setupSerialHandlers();
 });
 
 const start = async () => {
   window.serial.writeSerial("project.start");
-  isTurnOn.value = true;
+  globalStore.setProcessItsRunning(true);
   globalStore.setLoadingStatusWeight(true);
   setTimeout(() => {
-    if (!globalStore.motorWeightTurnOn) isTurnOn.value = false;
+    if (!globalStore.motorWeightTurnOn) globalStore.setProcessItsRunning(false);
     globalStore.setLoadingStatusWeight(false);
   }, 2000);
 };
@@ -73,28 +78,31 @@ const start = async () => {
 const abort = async () => {
   window.serial.writeSerial("project.stop");
   weightVsTurnsChart.value?.resetChart();
-  isTurnOn.value = false;
+  globalStore.setProcessItsRunning(false);
   globalStore.resetAll();
   globalStore.setLoadingStatus(true);
   setTimeout(() => {
-    if (globalStore.motorWeightTurnOn) isTurnOn.value = true;
+    if (globalStore.motorWeightTurnOn) globalStore.setProcessItsRunning(true);
     globalStore.setLoadingStatus(false);
   }, 2000);
 };
 
 const setupSerialHandlers = () => {
   serialDataHandler = (data: any) => {
-    globalStore.addLog(JSON.stringify(data));
     globalStore.setWeight(data.weight);
     globalStore.setCountOfTurns(data.countOfTurns);
     globalStore.setMotorLapTurnOn(data.motorLapTurnOn);
     globalStore.setMotorWeightTurnOn(data.motorWeightTurnOn);
     globalStore.setScaleStatus(data.scaleStatus);
   };
+  serialLogHandler = (data: any) => {
+    globalStore.addLog(data);
+  };
   serialErrorHandler = (data: any) => {
-    globalStore.addLog(JSON.stringify(data));
+    globalStore.addLog({ type: "error", message: JSON.stringify(data) });
   };
   window.serial.onSerialData(serialDataHandler);
+  window.serial.onSerialLog(serialLogHandler);
   window.serial.onSerialError(serialErrorHandler);
 };
 
