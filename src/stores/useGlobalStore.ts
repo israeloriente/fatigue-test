@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { i18n } from "../main";
+import type { Log } from "../interfaces/log.interface";
 
 export const useGlobalStore = defineStore("global", {
   state: () => ({
@@ -62,10 +63,11 @@ export const useGlobalStore = defineStore("global", {
       this.weight = 0;
       this.countOfTurns = 0;
     },
-    addLog(log: { type: "error" | "success" | "info"; message: string }) {
+    addLog(log: Log) {
       const timestamp = new Date().toLocaleTimeString();
       const t = i18n.global.t;
-      this.logs += `[${timestamp}] <span class="${log.type}"> ${t(log.message)} </span>\n`;
+      const msg = log.message.includes(".") ? t(log.message) : log.message;
+      this.logs += `[${timestamp}] <span class="${log.type}"> ${msg} </span>\n`;
     },
     cleanLogs() {
       this.logs = "";

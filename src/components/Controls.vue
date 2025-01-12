@@ -30,6 +30,7 @@
 import Toggle from "./Toggle.vue";
 import { useGlobalStore } from "../stores/useGlobalStore";
 import { computed, ref } from "vue";
+import GlobalService from "../services/global.service";
 
 const globalStore = useGlobalStore();
 const motorLapTurnOn = ref<typeof Toggle | null>(null);
@@ -41,14 +42,20 @@ const motorGiroChanged = (value: boolean) => {
     window.serial.writeSerial("motorLap.start");
     globalStore.setLoadingStatusTurns(true);
     setTimeout(() => {
-      if (!globalStore.motorLapTurnOn) motorLapTurnOn.value?.changeLocalValue();
+      if (!globalStore.motorLapTurnOn) {
+        motorLapTurnOn.value?.changeLocalValue();
+        GlobalService.simpleAlert("simpleAlert.arduinoNotConnected");
+      }
       globalStore.setLoadingStatusTurns(false);
     }, 2000);
   } else {
     window.serial.writeSerial("motorLap.stop");
     globalStore.setLoadingStatusTurns(true);
     setTimeout(() => {
-      if (globalStore.motorLapTurnOn) motorLapTurnOn.value?.changeLocalValue();
+      if (globalStore.motorLapTurnOn) {
+        motorLapTurnOn.value?.changeLocalValue();
+        GlobalService.simpleAlert("simpleAlert.arduinoNotConnected");
+      }
       globalStore.setLoadingStatusTurns(false);
     }, 2000);
   }
@@ -59,14 +66,20 @@ const motorWeightChanged = (value: boolean) => {
     window.serial.writeSerial("motorWeight.start");
     globalStore.setLoadingStatusWeight(true);
     setTimeout(() => {
-      if (!globalStore.motorWeightTurnOn) motorWeightTurnOn.value?.changeLocalValue();
+      if (!globalStore.motorWeightTurnOn) {
+        motorWeightTurnOn.value?.changeLocalValue();
+        GlobalService.simpleAlert("simpleAlert.arduinoNotConnected");
+      }
       globalStore.setLoadingStatusWeight(false);
     }, 2000);
   } else {
     window.serial.writeSerial("motorWeight.stop");
     globalStore.setLoadingStatusWeight(true);
     setTimeout(() => {
-      if (globalStore.motorWeightTurnOn) motorWeightTurnOn.value?.changeLocalValue();
+      if (globalStore.motorWeightTurnOn) {
+        motorWeightTurnOn.value?.changeLocalValue();
+        GlobalService.simpleAlert("simpleAlert.arduinoNotConnected");
+      }
       globalStore.setLoadingStatusWeight(false);
     }, 2000);
   }

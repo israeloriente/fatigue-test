@@ -1,7 +1,19 @@
 {
   "global": {
     "restarting": "Restarting...",
-    "errorListingSerialPorts": "Error listing serial ports"
+    "errorListingSerialPorts": "Error listing serial ports",
+    "errorWritingSerialPort": "Error writing serial port"
+  },
+  "simpleAlert": {
+    "arduinoNotConnected": {
+      "title": "Arduino not connected",
+      "text": "Please verify the connection of the Arduino",
+      "icon": "error",
+      "confirmButtonText": "Ok"
+    }
+  },
+  "simpleToast": {
+    "arduinoConnected": "Arduino connected"
   },
   "arduino": {
     "arduinoConnected": "Arduino connected",

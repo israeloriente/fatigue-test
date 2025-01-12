@@ -53,6 +53,8 @@ import SerialPort from "../components/SerialPort.vue";
 import { useGlobalStore } from "../stores/useGlobalStore";
 import InputData from "../components/InputData.vue";
 import Results from "../components/Results.vue";
+import GlobalService from "../services/global.service";
+import type { Log } from "../interfaces/log.interface";
 
 const globalStore = useGlobalStore();
 const weightVsTurnsChart = ref<typeof WeightVsTurnsChart | null>(null);
@@ -70,7 +72,10 @@ const start = async () => {
   globalStore.setProcessItsRunning(true);
   globalStore.setLoadingStatusWeight(true);
   setTimeout(() => {
-    if (!globalStore.motorWeightTurnOn) globalStore.setProcessItsRunning(false);
+    if (!globalStore.motorWeightTurnOn) {
+      GlobalService.simpleAlert("simpleAlert.arduinoNotConnected");
+      globalStore.setProcessItsRunning(false);
+    }
     globalStore.setLoadingStatusWeight(false);
   }, 2000);
 };
@@ -95,8 +100,9 @@ const setupSerialHandlers = () => {
     globalStore.setMotorWeightTurnOn(data.motorWeightTurnOn);
     globalStore.setScaleStatus(data.scaleStatus);
   };
-  serialLogHandler = (data: any) => {
+  serialLogHandler = (data: Log) => {
     globalStore.addLog(data);
+    if (data.message == "arduino.arduinoConnected") GlobalService.simpleToast("simpleToast.arduinoConnected");
   };
   serialErrorHandler = (data: any) => {
     globalStore.addLog({ type: "error", message: data });

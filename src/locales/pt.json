@@ -3,6 +3,17 @@
     "restarting": "Reniciando...",
     "errorListingSerialPorts": "Error ao mostrar as portas seriais"
   },
+  "simpleAlert": {
+    "arduinoNotConnected": {
+      "title": "Arduino não conectado",
+      "text": "Por favor, verifique a conexão do Arduino",
+      "icon": "error",
+      "confirmButtonText": "Ok"
+    }
+  },
+  "simpleToast": {
+    "arduinoConnected": "Arduino conectado"
+  },
   "arduino": {
     "arduinoConnected": "Arduino conectado com sucesso",
     "loadCellMotorActivated": "Motor de carga ativado",
