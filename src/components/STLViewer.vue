@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { markRaw, onMounted, onUnmounted } from "vue";
+import { markRaw } from "vue";
 import * as THREE from "three";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
@@ -17,6 +17,7 @@ export default {
       cameraCountAnimation: 1660,
       controls: null,
       timeout: null,
+      directionalLight: null, // Armazena a luz direcional
     };
   },
   mounted() {
@@ -35,15 +36,18 @@ export default {
       const light = new THREE.AmbientLight(0xffffff, 1);
       this.scene.add(light);
 
-      const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-      directionalLight.position.set(10, 10, 10);
-      this.scene.add(directionalLight);
+      // Criação da luz direcional
+      this.directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+      this.directionalLight.position.set(10, 10, 10); // Posição inicial
+      this.scene.add(this.directionalLight);
+
       this.controls = new OrbitControls(this.camera, this.renderer.domElement);
       this.controls.screenSpacePanning = true; // Permite pan em todos os sentidos
       this.controls.minPolarAngle = 0; // Permite olhar completamente para baixo
       this.controls.maxPolarAngle = Math.PI * 2; // Permite rotação completa
       this.controls.target.set(0, 0, 0); // Foco no alvo
       this.controls.update();
+
       this.animate();
       this.updateRendererSize();
       this.loadModel("src/assets/models/Model.stl");
@@ -52,30 +56,34 @@ export default {
       requestAnimationFrame(this.animate);
       this.controls.update();
       this.renderer.render(this.scene, this.camera);
+
+      // Atualiza a posição da luz para seguir a câmera
+      if (this.directionalLight) {
+        this.directionalLight.position.copy(this.camera.position);
+        this.directionalLight.target.position.copy(this.controls.target);
+        this.directionalLight.target.updateMatrixWorld(); // Atualiza o alvo da luz
+      }
     },
     loadModel(path) {
       const loader = new STLLoader();
       loader.load(
         path,
         (geometry) => {
-          // Cria o material e mesh
           const material = new THREE.MeshStandardMaterial();
           const mesh = new THREE.Mesh(geometry, material);
 
-          // Calcula o bounding box do objeto
           const boundingBox = new THREE.Box3().setFromObject(mesh);
           const boxSize = new THREE.Vector3();
-          boundingBox.getSize(boxSize); // Tamanho do objeto
+          boundingBox.getSize(boxSize);
           const boxCenter = new THREE.Vector3();
-          boundingBox.getCenter(boxCenter); // Centro do objeto
+          boundingBox.getCenter(boxCenter);
           mesh.position.set(-boxCenter.x, -boxCenter.y, -boxCenter.z);
           this.scene.add(mesh);
-          // Ajusta a câmera para ficar na frente do objeto
-          const maxDim = Math.max(boxSize.x, boxSize.y, boxSize.z); // Maior dimensão do objeto
-          this.camera.position.set(0, 1660, 1660);
-          // Posição diretamente na frente
-          this.camera.lookAt(0, 0, 0); // Olha para o centro da cena
-          this.controls.target.set(0, 0, 0); // Atualiza o foco da câmera
+
+          const maxDim = Math.max(boxSize.x, boxSize.y, boxSize.z);
+          this.camera.position.set(0, maxDim * 2, maxDim * 2);
+          this.camera.lookAt(0, 0, 0);
+          this.controls.target.set(0, 0, 0);
           this.controls.update();
 
           this.updateRendererSize();
@@ -101,8 +109,8 @@ export default {
     animateCamera() {
       if (this.cameraCountAnimation >= 800) {
         this.camera.position.set(0, this.cameraCountAnimation, this.cameraCountAnimation);
-        this.cameraCountAnimation -= 7; // Incrementa o valor
-        requestAnimationFrame(this.animateCamera); // Chama o próximo frame
+        this.cameraCountAnimation -= 8;
+        requestAnimationFrame(this.animateCamera);
       } else {
         console.log("Animação concluída!");
       }
