@@ -6,12 +6,15 @@ bool scaleStatus = false;       // Status da balança
 bool motorWeightTurnOn = false; // Motor 1 - Sensor de carga
 bool motorLapTurnOn = false;    // Motor 2 - Motor de passo
 int countOfTurns = 0;           // Quantidade de voltas
+int pinMotorLap = 8;            // Pino do motor de passo
 SensorCarga sensorCarga;
 
 void setup()
 {
   // Iniciar comunicação serial
   Serial.begin(9600);
+  pinMode(pinMotorLap, OUTPUT);
+  digitalWrite(pinMotorLap, HIGH);
   // scaleStatus = sensorCarga.setup();
   // Aguarde a comunicação serial estar pronta
   while (!Serial)

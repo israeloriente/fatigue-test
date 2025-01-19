@@ -5,6 +5,7 @@ extern bool scaleStatus;
 extern bool motorWeightTurnOn;
 extern bool motorLapTurnOn;
 extern int countOfTurns;
+extern int pinMotorLap;
 
 void log(String type, String message)
 {
@@ -51,6 +52,7 @@ void turnOnMotorLap()
 	if (motorLapTurnOn == false)
 	{
 		motorLapTurnOn = true;
+		digitalWrite(pinMotorLap, LOW);
 		log("info", "arduino.lapMotorTurnedOn");
 	}
 }
@@ -58,5 +60,6 @@ void turnOnMotorLap()
 void turnOffMotorLap()
 {
 	motorLapTurnOn = false;
+	digitalWrite(pinMotorLap, HIGH);
 	log("info", "arduino.lapMotorTurnedOff");
 }
