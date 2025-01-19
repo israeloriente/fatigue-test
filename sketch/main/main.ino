@@ -15,7 +15,7 @@ void setup()
   Serial.begin(9600);
   pinMode(pinMotorLap, OUTPUT);
   digitalWrite(pinMotorLap, HIGH);
-  // scaleStatus = sensorCarga.setup();
+  scaleStatus = sensorCarga.setup();
   // Aguarde a comunicação serial estar pronta
   while (!Serial)
   {
@@ -62,30 +62,7 @@ void loop()
     }
   }
 
-  // weight = sensorCarga.getWeight();
-
-  if (countOfTurns < 100 && motorLapTurnOn)
-  {
-    countOfTurns++;
-  }
-  else
-  {
-    countOfTurns = 0; // Zera o número de ciclos ao chegar em 420
-  }
-
-  // Incrementando o weight
-  if (weight < 50 && motorWeightTurnOn)
-  {
-    weight += 0.08; // Incrementa de 0.3 em 0.3
-    if (weight > 1)
-    {
-      turnOnMotorLap();
-    }
-    if (weight > 5)
-    {
-      turnOffMotorWeight();
-    }
-  }
+  weight = sensorCarga.getWeight();
 
   // // Formatar os valores em JSON
   String json = "{ \"weight\": " + String(weight, 1) +

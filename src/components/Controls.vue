@@ -47,7 +47,7 @@ const motorGiroChanged = (value: boolean) => {
         GlobalService.simpleAlert("simpleAlert.arduinoNotConnected");
       }
       globalStore.setLoadingStatusTurns(false);
-    }, 2000);
+    }, 3000);
   } else {
     window.serial.writeSerial("motorLap.stop");
     globalStore.setLoadingStatusTurns(true);
@@ -57,7 +57,7 @@ const motorGiroChanged = (value: boolean) => {
         GlobalService.simpleAlert("simpleAlert.arduinoNotConnected");
       }
       globalStore.setLoadingStatusTurns(false);
-    }, 2000);
+    }, 3000);
   }
 };
 
@@ -71,7 +71,7 @@ const motorWeightChanged = (value: boolean) => {
         GlobalService.simpleAlert("simpleAlert.arduinoNotConnected");
       }
       globalStore.setLoadingStatusWeight(false);
-    }, 2000);
+    }, 3000);
   } else {
     window.serial.writeSerial("motorWeight.stop");
     globalStore.setLoadingStatusWeight(true);
@@ -81,7 +81,7 @@ const motorWeightChanged = (value: boolean) => {
         GlobalService.simpleAlert("simpleAlert.arduinoNotConnected");
       }
       globalStore.setLoadingStatusWeight(false);
-    }, 2000);
+    }, 3000);
   }
 };
 

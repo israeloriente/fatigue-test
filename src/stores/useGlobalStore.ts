@@ -27,7 +27,7 @@ export const useGlobalStore = defineStore("global", {
       this.countOfTurns = value;
     },
     setWeight(value: number) {
-      this.weight = value;
+      this.weight = Math.abs(value);
     },
     setMotorLapTurnOn(value: boolean) {
       this.motorLapTurnOn = value;
