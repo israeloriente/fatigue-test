@@ -20,8 +20,8 @@
     "processInterrupted": "Processo interrompido",
     "loadMotorTurnedOn": "Motor de carga ligado",
     "loadMotorTurnedOff": "Motor de carga desligado",
-    "lapMotorTurnedOn": "Motor de passo ligado",
-    "lapMotorTurnedOff": "Motor de passo desligado"
+    "lapMotorTurnedOn": "Motor de giro ligado",
+    "lapMotorTurnedOff": "Motor de giro desligado"
   },
   "toolbar": {
     "home": "Início",
@@ -46,14 +46,14 @@
     "abortButton": "Abortar",
     "controls": {
       "directionRotation": "Direção de rotação (Horário)",
-      "motorLap": "Motor de passo",
+      "motorLap": "Motor de giro",
       "motorWeight": "Motor de carga"
     },
     "status": {
       "title": "Status",
       "serialPort": " Porta serial",
       "scale": " Célula de carga",
-      "motorLap": " Motor de passo",
+      "motorLap": " Motor de giro",
       "motorWeight": " Motor de carga"
     },
     "results": {
