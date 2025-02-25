@@ -1,24 +1,22 @@
 <template>
   <div class="list-group-item d-flex justify-content-between align-items-center">
-    <p class="title">{{ $t("home.serialPort.title") }}</p>
+    <p class="title">{{ $t("home.wifi.title") }}</p>
     <div class="ms-auto d-flex gap-2">
       <p class="mt-3 icon" :title="getTitleIconClose" @click="closePort()">❌</p>
-      <p class="mt-3 icon" :title="getTitleIconUpdate" @click="loadSerialPorts()">🔁</p>
+      <p class="mt-3 icon" :title="getTitleIconUpdate" @click="loadWifiList()">🔁</p>
     </div>
   </div>
-  <select class="form-select mb-2" v-model="globalStore.arduinoPort" @change="selectPort()">
-    <option v-for="port in serialPorts" :key="port" :value="port">
-      {{ port }}
-    </option>
+  <select class="form-select mb-2" v-model="globalStore.wifiSelected" @change="selectWifi()">
+    <option v-for="wifi in wifiList" :key="wifi.ip" :value="wifi.ip">{{ wifi.ip }} ({{ wifi.mac }})</option>
   </select>
   <div class="ms-auto d-flex gap-2">
     <button
       type="button"
       class="btn btn-primary btn-sm ms-auto buttonColorBlue button"
-      :disabled="globalStore.arduinoPort === ''"
-      @click="selectPort()"
+      :disabled="globalStore.wifiSelected?.ip === ''"
+      @click="selectWifi()"
     >
-      {{ $t("home.serialPort.button") }}
+      {{ $t("home.wifi.button") }}
     </button>
   </div>
 </template>
@@ -29,30 +27,30 @@ import { useGlobalStore } from "../stores/useGlobalStore";
 import GlobalService from "../services/global.service";
 import { useI18n } from "vue-i18n";
 
-const serialPorts = ref<string[]>([]);
+const wifiList = ref<{ ip: string; mac: string; hostname: string }[]>([]);
 const globalStore = useGlobalStore();
 const { t } = useI18n();
 
 onMounted(() => {
-  loadSerialPorts().then(() => {
-    globalStore.setArduinoPort(GlobalService.getStorage("config.arduinoPort"));
-    if (serialPorts.value.includes(globalStore.arduinoPort)) selectPort();
+  loadWifiList().then(() => {
+    globalStore.setWifiSelected(GlobalService.getStorage("config.wifiSelected"));
+    // if (serialPorts.value.includes(globalStore.arduinoPort)) selectWifi();
   });
 });
 
-const loadSerialPorts = async () => {
+const loadWifiList = async () => {
   try {
-    serialPorts.value = await window.serial.getSerialPorts();
+    wifiList.value = await window.socket.scanNetwork();
   } catch (error) {
     console.error("Erro ao carregar as portas seriais:", error);
   }
 };
-const selectPort = async () => {
+const selectWifi = async () => {
   try {
-    window.serial.openSerialPort(globalStore.arduinoPort);
-    globalStore.setArduinoPort(globalStore.arduinoPort);
-    window.serial.writeSerial("arduino.setup");
-    GlobalService.setStorage("config.arduinoPort", globalStore.arduinoPort);
+    window.socket.openSocketConnection(globalStore.wifiSelected.ip);
+    globalStore.setWifiSelected(globalStore.wifiSelected);
+    // window.serial.writeSerial("arduino.setup");
+    GlobalService.setStorage("config.wifiSelected", globalStore.wifiSelected);
   } catch (error) {
     console.error("Erro ao abrir a porta serial:", error);
   }
@@ -60,9 +58,9 @@ const selectPort = async () => {
 
 const closePort = async () => {
   try {
-    if (globalStore.arduinoPort !== "") {
-      window.serial.closeSerialPort();
-      globalStore.setArduinoPort("");
+    if (globalStore.wifiSelected.ip !== "") {
+      window.socket.closeSocketConnection();
+      globalStore.wifiSelected = { ip: "", mac: "", hostname: "" };
       globalStore.setProcessItsRunning(false);
     }
   } catch (error) {
@@ -71,10 +69,10 @@ const closePort = async () => {
 };
 
 const getTitleIconClose = computed(() => {
-  return t("home.serialPort.icons.close");
+  return t("home.wifi.icons.close");
 });
 const getTitleIconUpdate = computed(() => {
-  return t("home.serialPort.icons.update");
+  return t("home.wifi.icons.update");
 });
 </script>
 

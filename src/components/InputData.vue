@@ -40,9 +40,9 @@ const saveCargaAplicadaOnStorage = (ev: any) => {
 };
 
 onMounted(() => {
-  const { defaultSutCorpo, defaultCargaAplicada } = GlobalService.getStorage("config");
-  sutCorpo.value = defaultSutCorpo;
-  cargaAplicada.value = defaultCargaAplicada;
+  const { defaultSutCorpo, defaultCargaAplicada } = GlobalService.getStorage("config") || {};
+  sutCorpo.value = defaultSutCorpo || "";
+  cargaAplicada.value = defaultCargaAplicada || "";
 });
 </script>
 

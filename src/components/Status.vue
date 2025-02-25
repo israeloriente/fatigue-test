@@ -8,7 +8,7 @@
         green: arduinoPortIsConnected,
       }"
     ></span>
-    <span> {{ $t("home.status.serialPort") }} </span>
+    <span> {{ $t("home.status.raspberry") }} </span>
   </div>
   <div>
     <span class="buttons fakeClose" v-bind:class="{ green: globalStore.scaleStatus }"></span>
@@ -51,7 +51,7 @@ const isLoadingWeight = computed(() => {
   return globalStore.loadingStatus.weight;
 });
 const arduinoPortIsConnected = computed(() => {
-  return globalStore.arduinoPort !== "";
+  return globalStore.wifiSelected.ip !== "";
 });
 </script>
 

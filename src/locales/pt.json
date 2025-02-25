@@ -1,21 +1,21 @@
 {
   "global": {
     "restarting": "Reniciando...",
-    "errorListingSerialPorts": "Error ao mostrar as portas seriais"
+    "test": "Testando Log"
   },
   "simpleAlert": {
-    "arduinoNotConnected": {
-      "title": "Arduino não conectado",
+    "raspberryNotConnected": {
+      "title": "Dispositivo não conectado",
       "text": "Por favor, verifique a conexão do Arduino",
       "icon": "error",
       "confirmButtonText": "Ok"
     }
   },
   "simpleToast": {
-    "arduinoConnected": "Arduino conectado"
+    "raspberryConnected": "Arduino conectado"
   },
-  "arduino": {
-    "arduinoConnected": "Arduino conectado com sucesso",
+  "raspberry": {
+    "raspberryConnected": "Arduino conectado com sucesso",
     "loadCellMotorActivated": "Motor de carga ativado",
     "processInterrupted": "Processo interrompido",
     "loadMotorTurnedOn": "Motor de carga ligado",
@@ -29,11 +29,11 @@
     "settings": "Configurações"
   },
   "home": {
-    "serialPort": {
-      "title": "Selecione uma porta serial",
+    "wifi": {
+      "title": "Selecione um dispositivo",
       "icons": {
-        "close": "Desconectar porta serial",
-        "update": "Atualizar lista de portas"
+        "close": "Desconectar Dispositivo",
+        "update": "Atualizar listagem"
       },
       "button": "Conectar"
     },
@@ -51,7 +51,7 @@
     },
     "status": {
       "title": "Status",
-      "serialPort": " Porta serial",
+      "raspberry": " Dispositivo",
       "scale": " Célula de carga",
       "motorLap": " Motor de giro",
       "motorWeight": " Motor de carga"

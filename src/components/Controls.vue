@@ -39,54 +39,54 @@ const motorWeightTurnOn = ref<typeof Toggle | null>(null);
 // Função chamada quando o valor muda
 const motorGiroChanged = (value: boolean) => {
   if (value) {
-    window.serial.writeSerial("motorLap.start");
+    window.socket.writeSocket({ motorLapTurnOn: true });
     globalStore.setLoadingStatusTurns(true);
     setTimeout(() => {
       if (!globalStore.motorLapTurnOn) {
         motorLapTurnOn.value?.changeLocalValue();
-        GlobalService.simpleAlert("simpleAlert.arduinoNotConnected");
+        GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
       }
       globalStore.setLoadingStatusTurns(false);
-    }, 3000);
+    }, 1000);
   } else {
-    window.serial.writeSerial("motorLap.stop");
+    window.socket.writeSocket({ motorLapTurnOn: false });
     globalStore.setLoadingStatusTurns(true);
     setTimeout(() => {
       if (globalStore.motorLapTurnOn) {
         motorLapTurnOn.value?.changeLocalValue();
-        GlobalService.simpleAlert("simpleAlert.arduinoNotConnected");
+        GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
       }
       globalStore.setLoadingStatusTurns(false);
-    }, 3000);
+    }, 1000);
   }
 };
 
 const motorWeightChanged = (value: boolean) => {
   if (value) {
-    window.serial.writeSerial("motorWeight.start");
+    window.socket.writeSocket({ motorWeightTurnOn: true });
     globalStore.setLoadingStatusWeight(true);
     setTimeout(() => {
       if (!globalStore.motorWeightTurnOn) {
         motorWeightTurnOn.value?.changeLocalValue();
-        GlobalService.simpleAlert("simpleAlert.arduinoNotConnected");
+        GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
       }
       globalStore.setLoadingStatusWeight(false);
-    }, 3000);
+    }, 1000);
   } else {
-    window.serial.writeSerial("motorWeight.stop");
+    window.socket.writeSocket({ motorWeightTurnOn: false });
     globalStore.setLoadingStatusWeight(true);
     setTimeout(() => {
       if (globalStore.motorWeightTurnOn) {
         motorWeightTurnOn.value?.changeLocalValue();
-        GlobalService.simpleAlert("simpleAlert.arduinoNotConnected");
+        GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
       }
       globalStore.setLoadingStatusWeight(false);
-    }, 3000);
+    }, 1000);
   }
 };
 
 const arduinoPortIsEmpty = computed(() => {
-  return globalStore.arduinoPort === "";
+  return globalStore.wifiSelected.ip === "";
 });
 </script>
 

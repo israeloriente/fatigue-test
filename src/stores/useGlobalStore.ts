@@ -4,7 +4,7 @@ import type { Log } from "../interfaces/log.interface";
 
 export const useGlobalStore = defineStore("global", {
   state: () => ({
-    arduinoPort: "",
+    wifiSelected: { ip: "", mac: "", hostname: "" },
     countOfTurns: 0,
     motorLapTurnOn: false,
     motorWeightTurnOn: false,
@@ -20,7 +20,7 @@ export const useGlobalStore = defineStore("global", {
   }),
 
   getters: {
-    doubledCount: (state) => state.weight * 2,
+    // doubledCount: (state) => state.weight * 2,
   },
   actions: {
     setCountOfTurns(value: number) {
@@ -35,8 +35,8 @@ export const useGlobalStore = defineStore("global", {
     setMotorWeightTurnOn(value: boolean) {
       this.motorWeightTurnOn = value;
     },
-    setArduinoPort(value: string) {
-      this.arduinoPort = value;
+    setWifiSelected(value: { ip: string; mac: string; hostname: string }) {
+      this.wifiSelected = value;
     },
     setLoadingStatus(value: boolean) {
       this.loadingStatus = {

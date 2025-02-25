@@ -1,22 +1,21 @@
 {
   "global": {
     "restarting": "Restarting...",
-    "errorListingSerialPorts": "Error listing serial ports",
-    "errorWritingSerialPort": "Error writing serial port"
+    "test": "Testing Log"
   },
   "simpleAlert": {
-    "arduinoNotConnected": {
-      "title": "Arduino not connected",
+    "raspberryNotConnected": {
+      "title": "Dispositivo not connected",
       "text": "Please verify the connection of the Arduino",
       "icon": "error",
       "confirmButtonText": "Ok"
     }
   },
   "simpleToast": {
-    "arduinoConnected": "Arduino connected"
+    "raspberryConnected": "Device connected"
   },
-  "arduino": {
-    "arduinoConnected": "Arduino connected",
+  "raspberry": {
+    "raspberryConnected": "Device connected",
     "loadCellMotorActivated": "Load Cell Motor Activated",
     "processInterrupted": "Process Interrupted",
     "loadMotorTurnedOn": "Load Motor Turned On",
@@ -30,10 +29,10 @@
     "settings": "Settings"
   },
   "home": {
-    "serialPort": {
-      "title": "Select a serial port",
+    "wifi": {
+      "title": "Select a device",
       "icons": {
-        "close": "Disconnect serial port",
+        "close": "Disconnect Device",
         "update": "Update List"
       },
       "button": "Connect"
@@ -52,7 +51,7 @@
     },
     "status": {
       "title": "Status",
-      "serialPort": " Serial Port",
+      "raspberry": " Device",
       "scale": " Scale",
       "motorLap": " Stepper motor",
       "motorWeight": " Load cell motor"

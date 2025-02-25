@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <div class="menu">
-      <SerialPort />
+      <WifiList />
       <InputData />
       <div class="list-group-item d-flex justify-content-between align-items-center">
         <div class="ms-auto d-flex gap-2">
@@ -18,7 +18,7 @@
             type="button"
             class="btn btn-primary btn-sm ms-auto buttonColorBlue button"
             @click="start()"
-            :disabled="globalStore.arduinoPort === ''"
+            :disabled="globalStore.wifiSelected?.ip === ''"
           >
             {{ $t("home.startButton") }}
           </button>
@@ -49,31 +49,31 @@ import Terminal from "../components/Terminal.vue";
 import Controls from "../components/Controls.vue";
 import Status from "../components/Status.vue";
 import WeightVsTurnsChart from "../components/WeightVsTurnsChart.vue";
-import SerialPort from "../components/SerialPort.vue";
 import { useGlobalStore } from "../stores/useGlobalStore";
 import InputData from "../components/InputData.vue";
 import Results from "../components/Results.vue";
 import GlobalService from "../services/global.service";
 import type { Log } from "../interfaces/log.interface";
+import WifiList from "../components/WifiList.vue";
 
 const globalStore = useGlobalStore();
 const weightVsTurnsChart = ref<typeof WeightVsTurnsChart | null>(null);
-let serialDataHandler: ((data: any) => void) | null = null;
+let socketDataHandler: ((data: any) => void) | null = null;
 let serialErrorHandler: ((data: any) => void) | null = null;
 let serialLogHandler: ((data: any) => void) | null = null;
 
 onMounted(() => {
   globalStore.setProcessItsRunning(globalStore.motorWeightTurnOn || globalStore.motorLapTurnOn);
-  setupSerialHandlers();
+  setupSocketHandlers();
 });
 
 const start = async () => {
-  window.serial.writeSerial("project.start");
+  // window.serial.writeSerial("project.start");
   globalStore.setProcessItsRunning(true);
   globalStore.setLoadingStatusWeight(true);
   setTimeout(() => {
     if (!globalStore.motorWeightTurnOn) {
-      GlobalService.simpleAlert("simpleAlert.arduinoNotConnected");
+      GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
       globalStore.setProcessItsRunning(false);
     }
     globalStore.setLoadingStatusWeight(false);
@@ -81,7 +81,7 @@ const start = async () => {
 };
 
 const abort = async () => {
-  window.serial.writeSerial("project.stop");
+  // window.serial.writeSerial("project.stop");
   weightVsTurnsChart.value?.resetChart();
   globalStore.setProcessItsRunning(false);
   globalStore.resetAll();
@@ -92,39 +92,41 @@ const abort = async () => {
   }, 2000);
 };
 
-const setupSerialHandlers = () => {
-  serialDataHandler = (data: any) => {
-    globalStore.setWeight(data.weight);
-    globalStore.setCountOfTurns(data.countOfTurns);
-    globalStore.setMotorLapTurnOn(data.motorLapTurnOn);
-    globalStore.setMotorWeightTurnOn(data.motorWeightTurnOn);
-    globalStore.setScaleStatus(data.scaleStatus);
+const setupSocketHandlers = () => {
+  socketDataHandler = (data: any) => {
+    if (!data.isLog) {
+      console.log(data);
+      globalStore.setWeight(data.weight);
+      globalStore.setCountOfTurns(data.countOfTurns);
+      globalStore.setMotorLapTurnOn(data.motorLapTurnOn);
+      globalStore.setMotorWeightTurnOn(data.motorWeightTurnOn);
+      globalStore.setScaleStatus(data.scaleStatus);
+    } else {
+      globalStore.addLog(data);
+      if (data.message == "raspberry.raspberryConnected") GlobalService.simpleToast("simpleToast.raspberryConnected");
+    }
   };
-  serialLogHandler = (data: Log) => {
-    globalStore.addLog(data);
-    if (data.message == "arduino.arduinoConnected") GlobalService.simpleToast("simpleToast.arduinoConnected");
-  };
-  serialErrorHandler = (data: any) => {
-    globalStore.addLog({ type: "error", message: data });
-  };
-  window.serial.onSerialData(serialDataHandler);
-  window.serial.onSerialLog(serialLogHandler);
-  window.serial.onSerialError(serialErrorHandler);
+  // serialErrorHandler = (data: any) => {
+  //   globalStore.addLog({ type: "error", message: data });
+  // };
+  window.socket.onSocketData(socketDataHandler);
+  // window.serial.onSerialLog(serialLogHandler);
+  // window.serial.onSerialError(serialErrorHandler);
 };
 
 onUnmounted(() => {
-  if (serialDataHandler) {
+  if (socketDataHandler) {
     window.electron.removeAllListeners("serial-data");
-    serialDataHandler = null;
+    socketDataHandler = null;
   }
-  if (serialErrorHandler) {
-    window.electron.removeAllListeners("serial-error");
-    serialErrorHandler = null;
-  }
-  if (serialLogHandler) {
-    window.electron.removeAllListeners("serial-log");
-    serialLogHandler = null;
-  }
+  // if (serialErrorHandler) {
+  //   window.electron.removeAllListeners("serial-error");
+  //   serialErrorHandler = null;
+  // }
+  // if (serialLogHandler) {
+  //   window.electron.removeAllListeners("serial-log");
+  //   serialLogHandler = null;
+  // }
 });
 </script>
 
