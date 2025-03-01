@@ -1,23 +1,24 @@
 import socket
-# from hx711 import HX711
+import RPi.GPIO as GPIO
 import time
 import json
-# import RPi.GPIO as GPIO
+from hx711 import HX711
 
-# Configuração do HX711
-DT = 5    # Data Out (Conectado ao GPIO 5)
-SCK = 6   # Clock (Conectado ao GPIO 6)
-# hx = HX711(DT, SCK)
-# hx.set_reading_format("MSB", "MSB")
-# hx.set_reference_unit(1)  # Ajuste o valor conforme a calibração
-# hx.reset()
-# hx.tare()
-
+# Globals variables
 weight = 0.0
 motorWeightTurnOn = True
 motorLapTurnOn = True
 scaleStatus = True
 countOfTurns = 12
+
+# Configuração do HX711 (sensor de carda)
+DT = 5
+SCK = 6
+hx = HX711(DT, SCK)
+hx.set_reference_unit(82)
+hx.reset()
+hx.tare()
+
 
 
 # Configuração do Servidor TCP
@@ -50,7 +51,6 @@ def processar_comando(command):
         print("Comando recebido:", json_data)
         if "motorWeightTurnOn" in json_data:
             motorWeightTurnOn = json_data["motorWeightTurnOn"]
-            log("global.test")
         if "motorLapTurnOn" in json_data:
             motorLapTurnOn = json_data["motorLapTurnOn"]
 
@@ -59,11 +59,7 @@ def processar_comando(command):
 
 try:
    while True:
-        # --------------------
-        # ENVIO DOS DADOS
-        # --------------------
-        # Simula a leitura do peso
-        weight = weight + 0.45
+        weight = hx.get_weight(5) / 1000
 
         # Cria o JSON com os dados do HX711
         data = {
