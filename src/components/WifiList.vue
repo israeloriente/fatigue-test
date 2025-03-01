@@ -7,7 +7,7 @@
     </div>
   </div>
   <select class="form-select mb-2" v-model="globalStore.wifiSelected" @change="selectWifi()">
-    <option v-for="wifi in wifiList" :key="wifi.ip" :value="wifi.ip">{{ wifi.ip }} ({{ wifi.mac }})</option>
+    <option v-for="wifi in wifiList" :key="wifi.ip" :value="wifi">{{ wifi.ip }} ({{ wifi.mac }})</option>
   </select>
   <div class="ms-auto d-flex gap-2">
     <button

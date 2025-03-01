@@ -47,7 +47,7 @@ const motorGiroChanged = (value: boolean) => {
         GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
       }
       globalStore.setLoadingStatusTurns(false);
-    }, 1000);
+    }, 250);
   } else {
     window.socket.writeSocket({ motorLapTurnOn: false });
     globalStore.setLoadingStatusTurns(true);
@@ -57,7 +57,7 @@ const motorGiroChanged = (value: boolean) => {
         GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
       }
       globalStore.setLoadingStatusTurns(false);
-    }, 1000);
+    }, 250);
   }
 };
 
@@ -71,7 +71,7 @@ const motorWeightChanged = (value: boolean) => {
         GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
       }
       globalStore.setLoadingStatusWeight(false);
-    }, 1000);
+    }, 250);
   } else {
     window.socket.writeSocket({ motorWeightTurnOn: false });
     globalStore.setLoadingStatusWeight(true);
@@ -81,7 +81,7 @@ const motorWeightChanged = (value: boolean) => {
         GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
       }
       globalStore.setLoadingStatusWeight(false);
-    }, 1000);
+    }, 250);
   }
 };
 
