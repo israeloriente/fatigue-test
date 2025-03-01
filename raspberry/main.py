@@ -60,6 +60,7 @@ def processar_comando(command):
 try:
    while True:
         weight = hx.get_weight(5) / 1000
+        print(weight)
 
         # Cria o JSON com os dados do HX711
         data = {
