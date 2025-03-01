@@ -3,7 +3,6 @@ import time
 
 SENSOR_PIN = 10  # Verifique qual GPIO está usando
 
-GPIO.setmode(GPIO.BCM)
 GPIO.setup(SENSOR_PIN, GPIO.IN)
 
 try:
