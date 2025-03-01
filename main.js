@@ -88,7 +88,6 @@ ipcMain.handle("open-socket-connection", (event, selectedIP) => {
       if (message) {
         try {
           const jsonData = JSON.parse(message);
-          console.log("JSON Recebido:", jsonData);
           mainWindow.webContents.send("socket-data", jsonData);
         } catch (err) {
           console.error("Erro ao parsear JSON:", err, "Mensagem:", message);

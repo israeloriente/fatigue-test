@@ -1,24 +1,15 @@
 import RPi.GPIO as GPIO
 import time
 
-# Definir o pino do sensor (pode mudar se necessário)
-SENSOR_PIN = 10  # GPIO 17 (Pino físico 11)
+SENSOR_PIN = 10  # Verifique qual GPIO está usando
 
-# Configuração do Raspberry Pi
-GPIO.setmode(GPIO.BCM)  # Usa a numeração de pinos GPIO (BCM)
-GPIO.setup(SENSOR_PIN, GPIO.IN)  # Define o pino como entrada
-
-print("Sensor de proximidade pronto! Aguardando detecção...")
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(SENSOR_PIN, GPIO.IN)
 
 try:
     while True:
-        estado = GPIO.input(SENSOR_PIN)  # Lê o estado do sensor
-
-        if estado == GPIO.HIGH:  # Se for PNP, será HIGH quando detectar metal
-            print("⚡ Objeto detectado!")
-        else:
-            print("🔍 Nenhum objeto próximo.")
-
+        estado = GPIO.input(SENSOR_PIN)
+        print(f"Estado do sensor: {estado}")  # Deve imprimir 0 ou 1
+        time.sleep(0.5)
 except KeyboardInterrupt:
-    print("Saindo...")
-    GPIO.cleanup()  # Libera os pinos GPIO ao sair
+    GPIO.cleanup()
