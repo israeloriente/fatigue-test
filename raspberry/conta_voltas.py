@@ -3,6 +3,7 @@ import time
 
 SENSOR_PIN = 10  # Verifique qual GPIO está usando
 
+GPIO.setmode(GPIO.BOARD)
 GPIO.setup(SENSOR_PIN, GPIO.IN)
 
 try:
