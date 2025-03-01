@@ -19,8 +19,6 @@ try:
         else:
             print("🔍 Nenhum objeto próximo.")
 
-        time.sleep(0.5)  # Pequeno delay para evitar leitura excessiva
-
 except KeyboardInterrupt:
     print("Saindo...")
     GPIO.cleanup()  # Libera os pinos GPIO ao sair
