@@ -1,22 +1,29 @@
 import RPi.GPIO as GPIO
 import time
 
-SENSOR_PIN = 11  # Defina corretamente o GPIO que está usando
+# Definição dos pinos
+SENSOR_PIN = 17  # Pino GPIO onde o fio preto do sensor está conectado
+contaRodrigo = 0
+isBlocked = False
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(SENSOR_PIN, GPIO.IN)  # Adiciona pull-up interno
+# Configuração do GPIO
+GPIO.setmode(GPIO.BCM)  # Usando o esquema de numeração BCM
+GPIO.setup(SENSOR_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  # Configura o pino do sensor como entrada com pull-up
 
-print("Monitorando o sensor... Pressione Ctrl+C para sair.")
+print("Sensor Indutivo LJ12A3-4-Z/BX Iniciado (Ctrl+C para sair)")
 
 try:
     while True:
-        estado = GPIO.input(SENSOR_PIN)
-        if estado == GPIO.LOW:
-            print(estado)
-        else:
-            print(estado)
-        time.sleep(0.5)
-
+        sensor_state = GPIO.input(SENSOR_PIN)
+        if sensor_state == GPIO.HIGH and not isBlocked:
+            contaRodrigo += 1
+            isBlocked = True
+        if (sensor_state == GPIO.LOW):
+            isBlocked = False
+        print(contaRodrigo)
+        time.sleep(0.01)
 except KeyboardInterrupt:
-    print("\nSaindo...")
-    GPIO.cleanup()
+    print("\nEncerrando o programa...")
+
+finally:
+    GPIO.cleanup()  # Restaura os pinos GPIO ao estado original
