@@ -1,12 +1,12 @@
 # Save
 import socket
-# import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 import time
 import json
 import threading
 # from hx711 import HX711
 
-# GPIO.setmode(GPIO.BCM)
+GPIO.setmode(GPIO.BCM)
 
 # Variáveis globais
 projectIsRunning = False
@@ -18,6 +18,12 @@ scaleStatus = False
 countOfTurnsPin = 17
 countOfTurnsIsBlocked = False
 countOfTurns = 0
+directionRotation = False
+# Motor De passo #
+DIR_PIN = 20     # Pino GPIO para controle de direção
+STEP_PIN = 21    # Pino GPIO para envio de pulsos
+ENABLE_PIN = 19  # Pino GPIO para habilitação do motor
+SPR = 10000       # Qtd voltas
 
 # Configuração do HX711 (sensor de carda)
 DT = 5
@@ -28,8 +34,11 @@ SCK = 6
 # hx.tare()
 
 # Configuração do GPIO
-# GPIO.setup(motorLapPin, GPIO.OUT)
-# GPIO.setup(countOfTurnsPin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(motorLapPin, GPIO.OUT)
+GPIO.setup(countOfTurnsPin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(DIR_PIN, GPIO.OUT)
+GPIO.setup(STEP_PIN, GPIO.OUT)
+GPIO.setup(ENABLE_PIN, GPIO.OUT)
 
 # Configuração do Servidor TCP
 HOST = '0.0.0.0'  # Aceita conexões de qualquer IP
@@ -54,25 +63,39 @@ def log(message, client_socket):
 
 def turnOnMotorLap(turnOn):
     global motorLapTurnOn
-    # if turnOn:
-    #     GPIO.output(motorLapPin, GPIO.LOW)
-    # else:
-    #     GPIO.output(motorLapPin, GPIO.HIGH)
+    if turnOn:
+        GPIO.output(motorLapPin, GPIO.LOW)
+    else:
+        GPIO.output(motorLapPin, GPIO.HIGH)
     motorLapTurnOn = turnOn
 
 def turnOnMotorWeight(turnOn):
-    global motorWeightTurnOn
-    # if turnOn:
-    #     GPIO.output(motorWeightPin, GPIO.LOW)
-    # else:
-    #     GPIO.output(motorWeightPin, GPIO.HIGH)
+    global motorWeightTurnOn, directionRotation, DIR_PIN, SPR, STEP_PIN
     motorWeightTurnOn = turnOn
+    if turnOn:
+        GPIO.output(ENABLE_PIN, GPIO.LOW)
+        GPIO.output(DIR_PIN, directionRotation)  # Define a direção (True = horário, False = anti-horário)
+        for _ in range(SPR):
+            GPIO.output(STEP_PIN, GPIO.HIGH)  # Pulso HIGH
+            time.sleep(0.001)                # Aguarda
+            GPIO.output(STEP_PIN, GPIO.LOW)  # Pulso LOW
+            time.sleep(0.001)
+            print(motorWeightTurnOn)
+            if motorWeightTurnOn == False:
+                break
+    else:
+        GPIO.output(ENABLE_PIN, GPIO.HIGH)
+
+def changeDirectionRotation(direction):
+    global directionRotation
+    directionRotation = direction
 
 
 def startProject():
-    global projectIsRunning
+    global projectIsRunning, countOfTurns
+    countOfTurns = 0
     turnOnMotorLap(True)
-    turnOnMotorWeight(True)
+    # turnOnMotorWeight(True)
     # try:
     #     while projectIsRunning:
     #         weight = round(hx.get_weight(5) / 1000, 2)
@@ -88,7 +111,7 @@ def startProject():
 def stopProject():
     global projectIsRunning
     turnOnMotorLap(False)
-    turnOnMotorWeight(False)
+    # turnOnMotorWeight(False)
 
 
 def processar_comando(command, client_socket):
@@ -104,6 +127,8 @@ def processar_comando(command, client_socket):
                 stopProject()
         if "motorWeightTurnOn" in json_data:
             turnOnMotorWeight(json_data["motorWeightTurnOn"])
+        if "directionRotation" in json_data:
+            changeDirectionRotation(json_data["directionRotation"])
         if "motorLapTurnOn" in json_data:
             turnOnMotorLap(json_data["motorLapTurnOn"])
     except json.JSONDecodeError as e:
@@ -111,17 +136,17 @@ def processar_comando(command, client_socket):
 
 def startContaVoltas():
     global countOfTurns, countOfTurnsIsBlocked
-    # try:
-    #     while True:
-    #         sensor_state = GPIO.input(countOfTurnsPin)
-    #         if sensor_state == GPIO.HIGH and not countOfTurnsIsBlocked and projectIsRunning:
-    #             countOfTurns += 1
-    #             countOfTurnsIsBlocked = True
-    #         if sensor_state == GPIO.LOW:
-    #             countOfTurnsIsBlocked = False
-    #         time.sleep(0.01)
-    # except KeyboardInterrupt:
-    #     print("\nEncerrando Conta Voltas...")
+    try:
+        while True:
+            sensor_state = GPIO.input(countOfTurnsPin)
+            if sensor_state == GPIO.HIGH and not countOfTurnsIsBlocked and projectIsRunning:
+                countOfTurns += 1
+                countOfTurnsIsBlocked = True
+            if sensor_state == GPIO.LOW:
+                countOfTurnsIsBlocked = False
+            time.sleep(0.01)
+    except KeyboardInterrupt:
+        print("\nEncerrando Conta Voltas...")
 
 def main():
     client_socket = esperar_conexao()  # Certificando que a conexão é feita antes de usar o client_socket
@@ -135,7 +160,8 @@ def main():
                 "motorLapTurnOn": motorLapTurnOn,
                 "scaleStatus": scaleStatus,
                 "countOfTurns": countOfTurns,
-                "projectIsRunning": projectIsRunning
+                "projectIsRunning": projectIsRunning,
+                "directionRotation": directionRotation
             }
 
             # Converte o dicionário em JSON
