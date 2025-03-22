@@ -1,19 +1,20 @@
 # Save
 import socket
-import RPi.GPIO as GPIO
+# import RPi.GPIO as GPIO
 import time
 import json
 import threading
 # from hx711 import HX711
 
-GPIO.setmode(GPIO.BCM)
+# GPIO.setmode(GPIO.BCM)
 
 # Variáveis globais
+projectIsRunning = False
 weight = 0.0
-motorWeightTurnOn = True
+motorWeightTurnOn = False
 motorLapPin = 2
 motorLapTurnOn = False
-scaleStatus = True
+scaleStatus = False
 countOfTurnsPin = 17
 countOfTurnsIsBlocked = False
 countOfTurns = 0
@@ -27,8 +28,8 @@ SCK = 6
 # hx.tare()
 
 # Configuração do GPIO
-GPIO.setup(motorLapPin, GPIO.OUT)
-GPIO.setup(countOfTurnsPin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+# GPIO.setup(motorLapPin, GPIO.OUT)
+# GPIO.setup(countOfTurnsPin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 # Configuração do Servidor TCP
 HOST = '0.0.0.0'  # Aceita conexões de qualquer IP
@@ -51,35 +52,76 @@ def log(message, client_socket):
     json_data = json.dumps(msg)
     client_socket.sendall((json_data + "\n").encode())
 
+def turnOnMotorLap(turnOn):
+    global motorLapTurnOn
+    # if turnOn:
+    #     GPIO.output(motorLapPin, GPIO.LOW)
+    # else:
+    #     GPIO.output(motorLapPin, GPIO.HIGH)
+    motorLapTurnOn = turnOn
+
+def turnOnMotorWeight(turnOn):
+    global motorWeightTurnOn
+    # if turnOn:
+    #     GPIO.output(motorWeightPin, GPIO.LOW)
+    # else:
+    #     GPIO.output(motorWeightPin, GPIO.HIGH)
+    motorWeightTurnOn = turnOn
+
+
+def startProject():
+    global projectIsRunning
+    turnOnMotorLap(True)
+    turnOnMotorWeight(True)
+    # try:
+    #     while projectIsRunning:
+    #         weight = round(hx.get_weight(5) / 1000, 2)
+    #         if weight > 0.1:
+    #             scaleStatus = True
+    #         else:
+    #             scaleStatus = False
+    #         time.sleep(0.1)
+    # except KeyboardInterrupt:
+    #     print("\nEncerrando projeto...")
+    # projectIsRunning = False
+
+def stopProject():
+    global projectIsRunning
+    turnOnMotorLap(False)
+    turnOnMotorWeight(False)
+
+
 def processar_comando(command, client_socket):
-    global motorWeightTurnOn, motorLapTurnOn, scaleStatus
+    global motorWeightTurnOn, motorLapTurnOn, scaleStatus, projectIsRunning
     try:
         json_data = json.loads(command)
         print("Comando recebido:", json_data)
-        if "motorWeightTurnOn" in json_data:
-            motorWeightTurnOn = json_data["motorWeightTurnOn"]
-        if "motorLapTurnOn" in json_data:
-            motorLapTurnOn = json_data["motorLapTurnOn"]
-            if motorLapTurnOn:
-                GPIO.output(motorLapPin, GPIO.LOW)
+        if "projectIsRunning" in json_data:
+            projectIsRunning = json_data["projectIsRunning"]
+            if projectIsRunning:
+                startProject()
             else:
-                GPIO.output(motorLapPin, GPIO.HIGH)
+                stopProject()
+        if "motorWeightTurnOn" in json_data:
+            turnOnMotorWeight(json_data["motorWeightTurnOn"])
+        if "motorLapTurnOn" in json_data:
+            turnOnMotorLap(json_data["motorLapTurnOn"])
     except json.JSONDecodeError as e:
         print("Erro ao parsear JSON:", e)
 
 def startContaVoltas():
     global countOfTurns, countOfTurnsIsBlocked
-    try:
-        while True:
-            sensor_state = GPIO.input(countOfTurnsPin)
-            if sensor_state == GPIO.HIGH and not countOfTurnsIsBlocked:
-                countOfTurns += 1
-                countOfTurnsIsBlocked = True
-            if sensor_state == GPIO.LOW:
-                countOfTurnsIsBlocked = False
-            time.sleep(0.01)
-    except KeyboardInterrupt:
-        print("\nEncerrando Conta Voltas...")
+    # try:
+    #     while True:
+    #         sensor_state = GPIO.input(countOfTurnsPin)
+    #         if sensor_state == GPIO.HIGH and not countOfTurnsIsBlocked and projectIsRunning:
+    #             countOfTurns += 1
+    #             countOfTurnsIsBlocked = True
+    #         if sensor_state == GPIO.LOW:
+    #             countOfTurnsIsBlocked = False
+    #         time.sleep(0.01)
+    # except KeyboardInterrupt:
+    #     print("\nEncerrando Conta Voltas...")
 
 def main():
     client_socket = esperar_conexao()  # Certificando que a conexão é feita antes de usar o client_socket
@@ -92,7 +134,8 @@ def main():
                 "motorWeightTurnOn": motorWeightTurnOn,
                 "motorLapTurnOn": motorLapTurnOn,
                 "scaleStatus": scaleStatus,
-                "countOfTurns": countOfTurns
+                "countOfTurns": countOfTurns,
+                "projectIsRunning": projectIsRunning
             }
 
             # Converte o dicionário em JSON
@@ -111,7 +154,7 @@ def main():
             # ESCUTA DOS COMANDOS
             # --------------------
             try:
-                client_socket.settimeout(0.5)  # Timeout para não travar o loop
+                client_socket.settimeout(0.05)  # Timeout para não travar o loop
                 comando = client_socket.recv(1024).decode().strip()
                 if comando:
                     processar_comando(comando, client_socket)
@@ -124,13 +167,13 @@ def main():
                 client_socket.close()
                 client_socket = esperar_conexao()  # Recriar a conexão com o cliente
 
-            time.sleep(0.1)
+            time.sleep(0.05)
     except KeyboardInterrupt:
         print("Saindo...")
     finally:
         client_socket.close()
         server.close()
-        GPIO.cleanup()
+        # GPIO.cleanup()
 
 # Criando e iniciando as threads
 thread_conta_voltas = threading.Thread(target=startContaVoltas)

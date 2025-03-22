@@ -15,7 +15,7 @@ export const useGlobalStore = defineStore("global", {
       weight: false,
       lap: false,
     },
-    processItsRunning: false,
+    projectIsRunning: false,
     currentLanguage: "en",
   }),
 
@@ -53,8 +53,8 @@ export const useGlobalStore = defineStore("global", {
     setScaleStatus(value: boolean) {
       this.scaleStatus = value;
     },
-    setProcessItsRunning(value: boolean) {
-      this.processItsRunning = value;
+    setProjectIsRunning(value: boolean) {
+      this.projectIsRunning = value;
     },
     changeLanguage(language: "en" | "pt") {
       this.currentLanguage = language;

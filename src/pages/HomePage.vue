@@ -6,7 +6,7 @@
       <div class="list-group-item d-flex justify-content-between align-items-center">
         <div class="ms-auto d-flex gap-2">
           <button
-            v-if="globalStore.processItsRunning"
+            v-if="globalStore.motorWeightTurnOn || globalStore.motorLapTurnOn || globalStore.projectIsRunning"
             type="button"
             class="btn btn-danger btn-sm ms-auto button"
             @click="abort()"
@@ -14,7 +14,7 @@
             {{ $t("home.abortButton") }}
           </button>
           <button
-            v-if="!globalStore.processItsRunning"
+            v-if="!globalStore.motorWeightTurnOn && !globalStore.motorLapTurnOn && !globalStore.projectIsRunning"
             type="button"
             class="btn btn-primary btn-sm ms-auto buttonColorBlue button"
             @click="start()"
@@ -53,7 +53,6 @@ import { useGlobalStore } from "../stores/useGlobalStore";
 import InputData from "../components/InputData.vue";
 import Results from "../components/Results.vue";
 import GlobalService from "../services/global.service";
-import type { Log } from "../interfaces/log.interface";
 import WifiList from "../components/WifiList.vue";
 
 const globalStore = useGlobalStore();
@@ -63,33 +62,34 @@ let serialErrorHandler: ((data: any) => void) | null = null;
 let serialLogHandler: ((data: any) => void) | null = null;
 
 onMounted(() => {
-  globalStore.setProcessItsRunning(globalStore.motorWeightTurnOn || globalStore.motorLapTurnOn);
+  // globalStore.setProcessItsRunning(globalStore.motorWeightTurnOn || globalStore.motorLapTurnOn);
   setupSocketHandlers();
 });
 
 const start = async () => {
-  // window.serial.writeSerial("project.start");
-  globalStore.setProcessItsRunning(true);
-  globalStore.setLoadingStatusWeight(true);
+  weightVsTurnsChart.value?.resetChart();
+  globalStore.resetAll();
+  globalStore.cleanLogs();
+  window.socket.writeSocket({ projectIsRunning: true });
+  globalStore.setLoadingStatus(true);
   setTimeout(() => {
-    if (!globalStore.motorWeightTurnOn) {
+    if (!globalStore.projectIsRunning) {
       GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
-      globalStore.setProcessItsRunning(false);
     }
     globalStore.setLoadingStatusWeight(false);
-  }, 2000);
+    globalStore.setLoadingStatus(false);
+  }, 250);
 };
 
 const abort = async () => {
-  // window.serial.writeSerial("project.stop");
-  weightVsTurnsChart.value?.resetChart();
-  globalStore.setProcessItsRunning(false);
-  globalStore.resetAll();
+  window.socket.writeSocket({ projectIsRunning: false });
   globalStore.setLoadingStatus(true);
   setTimeout(() => {
-    if (globalStore.motorWeightTurnOn) globalStore.setProcessItsRunning(true);
+    if (globalStore.projectIsRunning) {
+      GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
+    }
     globalStore.setLoadingStatus(false);
-  }, 2000);
+  }, 250);
 };
 
 const setupSocketHandlers = () => {
@@ -101,6 +101,7 @@ const setupSocketHandlers = () => {
       globalStore.setMotorLapTurnOn(data.motorLapTurnOn);
       globalStore.setMotorWeightTurnOn(data.motorWeightTurnOn);
       globalStore.setScaleStatus(data.scaleStatus);
+      globalStore.setProjectIsRunning(data.projectIsRunning);
     } else {
       globalStore.addLog(data);
       if (data.message == "raspberry.raspberryConnected") GlobalService.simpleToast("simpleToast.raspberryConnected");
