@@ -8,6 +8,7 @@ export const useGlobalStore = defineStore("global", {
     countOfTurns: 0,
     motorLapTurnOn: false,
     motorWeightTurnOn: false,
+    directionRotation: false,
     scaleStatus: false,
     weight: 0,
     logs: "",
@@ -55,6 +56,9 @@ export const useGlobalStore = defineStore("global", {
     },
     setProjectIsRunning(value: boolean) {
       this.projectIsRunning = value;
+    },
+    setDirectionRotation(value: boolean) {
+      this.directionRotation = value;
     },
     changeLanguage(language: "en" | "pt") {
       this.currentLanguage = language;

@@ -102,6 +102,7 @@ const setupSocketHandlers = () => {
       globalStore.setMotorWeightTurnOn(data.motorWeightTurnOn);
       globalStore.setScaleStatus(data.scaleStatus);
       globalStore.setProjectIsRunning(data.projectIsRunning);
+      globalStore.setDirectionRotation(data.directionRotation);
     } else {
       globalStore.addLog(data);
       if (data.message == "raspberry.raspberryConnected") GlobalService.simpleToast("simpleToast.raspberryConnected");

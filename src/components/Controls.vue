@@ -12,7 +12,12 @@
     </li>
     <li class="item list-group-item d-flex justify-content-between align-items-center">
       <p class="label">{{ $t("home.controls.directionRotation") }}</p>
-      <Toggle :disabled="arduinoPortIsEmpty" />
+      <Toggle
+        :disabled="arduinoPortIsEmpty"
+        :value="globalStore.directionRotation"
+        @changed="directionRotationChanged"
+        ref="directionRotation"
+      />
     </li>
     <li class="item list-group-item d-flex justify-content-between align-items-center">
       <p class="label">{{ $t("home.controls.motorWeight") }}</p>
@@ -35,6 +40,7 @@ import GlobalService from "../services/global.service";
 const globalStore = useGlobalStore();
 const motorLapTurnOn = ref<typeof Toggle | null>(null);
 const motorWeightTurnOn = ref<typeof Toggle | null>(null);
+const directionRotation = ref<typeof Toggle | null>(null);
 
 // Função chamada quando o valor muda
 const motorGiroChanged = (value: boolean) => {
@@ -65,22 +71,42 @@ const motorWeightChanged = (value: boolean) => {
   if (value) {
     window.socket.writeSocket({ motorWeightTurnOn: true });
     globalStore.setLoadingStatusWeight(true);
-    setTimeout(() => {
-      if (!globalStore.motorWeightTurnOn) {
-        motorWeightTurnOn.value?.changeLocalValue();
-        GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
-      }
-      globalStore.setLoadingStatusWeight(false);
-    }, 250);
+    // setTimeout(() => {
+    //   if (!globalStore.motorWeightTurnOn) {
+    //     motorWeightTurnOn.value?.changeLocalValue();
+    //     GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
+    //   }
+    //   globalStore.setLoadingStatusWeight(false);
+    // }, 250);
   } else {
     window.socket.writeSocket({ motorWeightTurnOn: false });
     globalStore.setLoadingStatusWeight(true);
+    // setTimeout(() => {
+    //   if (globalStore.motorWeightTurnOn) {
+    //     motorWeightTurnOn.value?.changeLocalValue();
+    //     GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
+    //   }
+    //   globalStore.setLoadingStatusWeight(false);
+    // }, 250);
+  }
+};
+
+const directionRotationChanged = (value: boolean) => {
+  if (value) {
+    window.socket.writeSocket({ directionRotation: true });
     setTimeout(() => {
-      if (globalStore.motorWeightTurnOn) {
-        motorWeightTurnOn.value?.changeLocalValue();
+      if (!globalStore.directionRotation) {
+        directionRotation.value?.changeLocalValue();
         GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
       }
-      globalStore.setLoadingStatusWeight(false);
+    }, 250);
+  } else {
+    window.socket.writeSocket({ directionRotation: false });
+    setTimeout(() => {
+      if (globalStore.directionRotation) {
+        directionRotation.value?.changeLocalValue();
+        GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
+      }
     }, 250);
   }
 };
