@@ -1,16 +1,17 @@
-# Save
 import socket
 import RPi.GPIO as GPIO
 import time
 import json
 import threading
-# from hx711 import HX711
+from hx711 import HX711
 
 GPIO.setmode(GPIO.BCM)
 
 # Variáveis globais
 projectIsRunning = False
+chegouAoPeso = False
 weight = 0.0
+maxWeight = 5
 motorWeightTurnOn = False
 motorLapPin = 2
 motorLapTurnOn = False
@@ -28,10 +29,10 @@ SPR = 10000       # Qtd voltas
 # Configuração do HX711 (sensor de carda)
 DT = 5
 SCK = 6
-# hx = HX711(DT, SCK)
-# hx.set_reference_unit(82)
-# hx.reset()
-# hx.tare()
+hx = HX711(DT, SCK)
+hx.set_reference_unit(82)
+hx.reset()
+hx.tare()
 
 # Configuração do GPIO
 GPIO.setup(motorLapPin, GPIO.OUT)
@@ -72,47 +73,41 @@ def turnOnMotorLap(turnOn):
 def turnOnMotorWeight(turnOn):
     global motorWeightTurnOn, directionRotation, DIR_PIN, SPR, STEP_PIN
     motorWeightTurnOn = turnOn
-    if turnOn:
-        GPIO.output(ENABLE_PIN, GPIO.LOW)
-        GPIO.output(DIR_PIN, directionRotation)  # Define a direção (True = horário, False = anti-horário)
-        for _ in range(SPR):
-            GPIO.output(STEP_PIN, GPIO.HIGH)  # Pulso HIGH
-            time.sleep(0.001)                # Aguarda
-            GPIO.output(STEP_PIN, GPIO.LOW)  # Pulso LOW
-            time.sleep(0.001)
-            print(motorWeightTurnOn)
-            if motorWeightTurnOn == False:
-                break
-    else:
-        GPIO.output(ENABLE_PIN, GPIO.HIGH)
+
+    def motor_thread():
+        if turnOn:
+            GPIO.output(ENABLE_PIN, GPIO.LOW)
+            GPIO.output(DIR_PIN, directionRotation)  # Define a direção (True = horário, False = anti-horário)
+            for _ in range(SPR):
+                if motorWeightTurnOn == False:  # Verifica se motorWeightTurnOn é False antes de cada iteração
+                    break  # Sai do loop imediatamente
+                GPIO.output(STEP_PIN, GPIO.HIGH)  # Pulso HIGH
+                time.sleep(0.001)                # Aguarda
+                GPIO.output(STEP_PIN, GPIO.LOW)  # Pulso LOW
+                time.sleep(0.001)
+        else:
+            GPIO.output(ENABLE_PIN, GPIO.HIGH)
+
+    # Criando e iniciando a thread
+    motor_thread = threading.Thread(target=motor_thread)
+    motor_thread.daemon = True  # Torna a thread em daemon (fecha automaticamente com o programa principal)
+    motor_thread.start()
 
 def changeDirectionRotation(direction):
     global directionRotation
     directionRotation = direction
 
-
 def startProject():
     global projectIsRunning, countOfTurns
     countOfTurns = 0
+    chegouAoPeso = False
     turnOnMotorLap(True)
-    # turnOnMotorWeight(True)
-    # try:
-    #     while projectIsRunning:
-    #         weight = round(hx.get_weight(5) / 1000, 2)
-    #         if weight > 0.1:
-    #             scaleStatus = True
-    #         else:
-    #             scaleStatus = False
-    #         time.sleep(0.1)
-    # except KeyboardInterrupt:
-    #     print("\nEncerrando projeto...")
-    # projectIsRunning = False
+    turnOnMotorWeight(True)
 
 def stopProject():
     global projectIsRunning
     turnOnMotorLap(False)
-    # turnOnMotorWeight(False)
-
+    turnOnMotorWeight(False)
 
 def processar_comando(command, client_socket):
     global motorWeightTurnOn, motorLapTurnOn, scaleStatus, projectIsRunning
@@ -135,11 +130,11 @@ def processar_comando(command, client_socket):
         print("Erro ao parsear JSON:", e)
 
 def startContaVoltas():
-    global countOfTurns, countOfTurnsIsBlocked
+    global countOfTurns, countOfTurnsIsBlocked, chegouAoPeso
     try:
         while True:
             sensor_state = GPIO.input(countOfTurnsPin)
-            if sensor_state == GPIO.HIGH and not countOfTurnsIsBlocked and projectIsRunning:
+            if sensor_state == GPIO.HIGH and not countOfTurnsIsBlocked and projectIsRunning and chegouAoPeso:
                 countOfTurns += 1
                 countOfTurnsIsBlocked = True
             if sensor_state == GPIO.LOW:
@@ -149,10 +144,16 @@ def startContaVoltas():
         print("\nEncerrando Conta Voltas...")
 
 def main():
+    global weight, chegouAoPeso, maxWeight
     client_socket = esperar_conexao()  # Certificando que a conexão é feita antes de usar o client_socket
     try:
         while True:
-            # weight = round(hx.get_weight(5) / 1000, 2)
+            weight = round(hx.get_weight(5) / 1000, 2)
+
+            if weight > maxWeight:
+                chegouAoPeso = True
+                turnOnMotorWeight(False)
+
             # Criação do JSON com os dados (pode incluir outros sensores aqui)
             data = {
                 "weight": str(weight),
