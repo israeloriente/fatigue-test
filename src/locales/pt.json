@@ -15,13 +15,16 @@
     "raspberryConnected": "Arduino conectado"
   },
   "raspberry": {
-    "raspberryConnected": "Arduino conectado com sucesso",
-    "loadCellMotorActivated": "Motor de carga ativado",
+    "raspberryConnected": "Dispositivo Conectado",
+    "startProject": "Projeto Iniciado",
     "processInterrupted": "Processo interrompido",
     "loadMotorTurnedOn": "Motor de carga ligado",
     "loadMotorTurnedOff": "Motor de carga desligado",
-    "lapMotorTurnedOn": "Motor de giro ligado",
-    "lapMotorTurnedOff": "Motor de giro desligado"
+    "motorLapTurnedOn": "Motor de giro ligado",
+    "motorLapTurnedOff": "Motor de giro desligado",
+    "directionOpening": "Direção de afrouxamento do motor de carga",
+    "directionClosing": "Direção de aperto do motor de carga",
+    "weightIsOk": "Peso chegou ao valor desejado"
   },
   "toolbar": {
     "home": "Início",
@@ -45,14 +48,14 @@
     "startButton": "Começar",
     "abortButton": "Abortar",
     "controls": {
-      "directionRotation": "Direção de rotação (Horário)",
+      "directionRotation": "Direção de rotação (Apertando)",
       "motorLap": "Motor de giro",
       "motorWeight": "Motor de carga"
     },
     "status": {
       "title": "Status",
       "raspberry": " Dispositivo",
-      "scale": " Célula de carga",
+      "direction": " Direção (Apertando)",
       "motorLap": " Motor de giro",
       "motorWeight": " Motor de carga"
     },

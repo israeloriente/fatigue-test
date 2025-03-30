@@ -53,7 +53,7 @@ const motorGiroChanged = (value: boolean) => {
         GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
       }
       globalStore.setLoadingStatusTurns(false);
-    }, 250);
+    }, 500);
   } else {
     window.socket.writeSocket({ motorLapTurnOn: false });
     globalStore.setLoadingStatusTurns(true);
@@ -63,7 +63,7 @@ const motorGiroChanged = (value: boolean) => {
         GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
       }
       globalStore.setLoadingStatusTurns(false);
-    }, 250);
+    }, 500);
   }
 };
 
@@ -71,43 +71,47 @@ const motorWeightChanged = (value: boolean) => {
   if (value) {
     window.socket.writeSocket({ motorWeightTurnOn: true });
     globalStore.setLoadingStatusWeight(true);
-    // setTimeout(() => {
-    //   if (!globalStore.motorWeightTurnOn) {
-    //     motorWeightTurnOn.value?.changeLocalValue();
-    //     GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
-    //   }
-    //   globalStore.setLoadingStatusWeight(false);
-    // }, 250);
+    setTimeout(() => {
+      if (!globalStore.motorWeightTurnOn) {
+        motorWeightTurnOn.value?.changeLocalValue();
+        GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
+      }
+      globalStore.setLoadingStatusWeight(false);
+    }, 500);
   } else {
     window.socket.writeSocket({ motorWeightTurnOn: false });
     globalStore.setLoadingStatusWeight(true);
-    // setTimeout(() => {
-    //   if (globalStore.motorWeightTurnOn) {
-    //     motorWeightTurnOn.value?.changeLocalValue();
-    //     GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
-    //   }
-    //   globalStore.setLoadingStatusWeight(false);
-    // }, 250);
+    setTimeout(() => {
+      if (globalStore.motorWeightTurnOn) {
+        motorWeightTurnOn.value?.changeLocalValue();
+        GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
+      }
+      globalStore.setLoadingStatusWeight(false);
+    }, 500);
   }
 };
 
 const directionRotationChanged = (value: boolean) => {
   if (value) {
     window.socket.writeSocket({ directionRotation: true });
+    globalStore.setLoadingStatusDirection(true);
     setTimeout(() => {
       if (!globalStore.directionRotation) {
         directionRotation.value?.changeLocalValue();
         GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
       }
-    }, 250);
+      globalStore.setLoadingStatusDirection(false);
+    }, 500);
   } else {
     window.socket.writeSocket({ directionRotation: false });
+    globalStore.setLoadingStatusDirection(true);
     setTimeout(() => {
       if (globalStore.directionRotation) {
         directionRotation.value?.changeLocalValue();
         GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
       }
-    }, 250);
+      globalStore.setLoadingStatusDirection(false);
+    }, 500);
   }
 };
 

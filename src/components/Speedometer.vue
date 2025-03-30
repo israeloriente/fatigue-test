@@ -20,9 +20,9 @@ const _speedValueInNumeric = ref(null);
 const _speedNobNumbHolder = ref([]);
 const _speedometerProperty = ref({
   id: "speedometer-cnt-" + Math.floor(Math.random() * 100000) + 1,
-  maxVal: 60,
+  maxVal: 50,
   divFact: 5,
-  dangerLevel: 50,
+  dangerLevel: 40,
   initDeg: -45,
   maxDeg: 270,
   speedNobeH: 4,

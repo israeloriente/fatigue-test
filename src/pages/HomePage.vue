@@ -58,11 +58,13 @@ import WifiList from "../components/WifiList.vue";
 const globalStore = useGlobalStore();
 const weightVsTurnsChart = ref<typeof WeightVsTurnsChart | null>(null);
 let socketDataHandler: ((data: any) => void) | null = null;
-let serialErrorHandler: ((data: any) => void) | null = null;
-let serialLogHandler: ((data: any) => void) | null = null;
+// let serialErrorHandler: ((data: any) => void) | null = null;
+// let serialLogHandler: ((data: any) => void) | null = null;
 
 onMounted(() => {
   // globalStore.setProcessItsRunning(globalStore.motorWeightTurnOn || globalStore.motorLapTurnOn);
+  let ip = GlobalService.getStorage("config.wifiSelected");
+  globalStore.setWifiSelected({ ip, hostname: "", mac: "" });
   setupSocketHandlers();
 });
 
@@ -76,9 +78,8 @@ const start = async () => {
     if (!globalStore.projectIsRunning) {
       GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
     }
-    globalStore.setLoadingStatusWeight(false);
     globalStore.setLoadingStatus(false);
-  }, 250);
+  }, 500);
 };
 
 const abort = async () => {
@@ -89,7 +90,7 @@ const abort = async () => {
       GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
     }
     globalStore.setLoadingStatus(false);
-  }, 250);
+  }, 500);
 };
 
 const setupSocketHandlers = () => {
@@ -100,12 +101,10 @@ const setupSocketHandlers = () => {
       globalStore.setCountOfTurns(data.countOfTurns);
       globalStore.setMotorLapTurnOn(data.motorLapTurnOn);
       globalStore.setMotorWeightTurnOn(data.motorWeightTurnOn);
-      globalStore.setScaleStatus(data.scaleStatus);
       globalStore.setProjectIsRunning(data.projectIsRunning);
       globalStore.setDirectionRotation(data.directionRotation);
     } else {
       globalStore.addLog(data);
-      if (data.message == "raspberry.raspberryConnected") GlobalService.simpleToast("simpleToast.raspberryConnected");
     }
   };
   // serialErrorHandler = (data: any) => {

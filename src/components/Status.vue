@@ -11,8 +11,11 @@
     <span> {{ $t("home.status.raspberry") }} </span>
   </div>
   <div>
-    <span class="buttons fakeClose" v-bind:class="{ green: globalStore.scaleStatus }"></span>
-    <span> {{ $t("home.status.scale") }} </span>
+    <span
+      class="buttons fakeClose"
+      v-bind:class="{ green: globalStore.directionRotation, yellow: isLoadingDirection }"
+    ></span>
+    <span> {{ $t("home.status.direction") }} </span>
   </div>
   <div>
     <span
@@ -46,6 +49,9 @@ onMounted(() => {});
 
 const isLoadingLap = computed(() => {
   return globalStore.loadingStatus.lap;
+});
+const isLoadingDirection = computed(() => {
+  return globalStore.loadingStatus.direction;
 });
 const isLoadingWeight = computed(() => {
   return globalStore.loadingStatus.weight;

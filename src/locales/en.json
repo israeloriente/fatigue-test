@@ -16,12 +16,16 @@
   },
   "raspberry": {
     "raspberryConnected": "Device connected",
+    "startProject": "Project Started",
     "loadCellMotorActivated": "Load Cell Motor Activated",
     "processInterrupted": "Process Interrupted",
     "loadMotorTurnedOn": "Load Motor Turned On",
     "loadMotorTurnedOff": "Load Motor Turned Off",
-    "lapMotorTurnedOn": "Stepper Motor Turned On",
-    "lapMotorTurnedOff": "Stepper Motor Turned Off"
+    "motorLapTurnedOn": "Stepper Motor Turned On",
+    "motorLapTurnedOff": "Stepper Motor Turned Off",
+    "directionOpening": "Loosening direction of the charging motor",
+    "directionClosing": "Tightening direction of the charging motor",
+    "weightIsOk": "Weight reached the desired value"
   },
   "toolbar": {
     "home": "Home",
@@ -45,14 +49,14 @@
     "startButton": "Start",
     "abortButton": "Abort",
     "controls": {
-      "directionRotation": "Direction rotation (Clockwise)",
+      "directionRotation": "Direction rotation (Tightening)",
       "motorLap": "Stepper motor",
       "motorWeight": "Load cell motor"
     },
     "status": {
       "title": "Status",
       "raspberry": " Device",
-      "scale": " Scale",
+      "direction": " Direction (Tightening)",
       "motorLap": " Stepper motor",
       "motorWeight": " Load cell motor"
     },

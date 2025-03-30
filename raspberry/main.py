@@ -8,6 +8,7 @@ from hx711 import HX711
 GPIO.setmode(GPIO.BCM)
 
 # Variáveis globais
+client_socket = None
 projectIsRunning = False
 chegouAoPeso = False
 weight = 0.0
@@ -15,7 +16,6 @@ maxWeight = 5
 motorWeightTurnOn = False
 motorLapPin = 2
 motorLapTurnOn = False
-scaleStatus = False
 countOfTurnsPin = 17
 countOfTurnsIsBlocked = False
 countOfTurns = 0
@@ -57,16 +57,19 @@ def esperar_conexao():
     print('Cliente conectado:', addr)
     return client_socket
 
-def log(message, client_socket):
-    msg = {"isLog": True, "message": message}
+def log(message, type="info"):
+    global client_socket
+    msg = {"isLog": True, "message": message, "type": type}
     json_data = json.dumps(msg)
     client_socket.sendall((json_data + "\n").encode())
 
 def turnOnMotorLap(turnOn):
     global motorLapTurnOn
     if turnOn:
+        log("raspberry.motorLapTurnedOn")
         GPIO.output(motorLapPin, GPIO.LOW)
     else:
+        log("raspberry.motorLapTurnedOff")
         GPIO.output(motorLapPin, GPIO.HIGH)
     motorLapTurnOn = turnOn
 
@@ -76,6 +79,7 @@ def turnOnMotorWeight(turnOn):
 
     def motor_thread():
         if turnOn:
+            log("raspberry.loadMotorTurnedOn", "info")
             GPIO.output(ENABLE_PIN, GPIO.LOW)
             GPIO.output(DIR_PIN, directionRotation)  # Define a direção (True = horário, False = anti-horário)
             for _ in range(SPR):
@@ -86,6 +90,7 @@ def turnOnMotorWeight(turnOn):
                 GPIO.output(STEP_PIN, GPIO.LOW)  # Pulso LOW
                 time.sleep(0.001)
         else:
+            log("raspberry.loadMotorTurnedOff")
             GPIO.output(ENABLE_PIN, GPIO.HIGH)
 
     # Criando e iniciando a thread
@@ -95,22 +100,30 @@ def turnOnMotorWeight(turnOn):
 
 def changeDirectionRotation(direction):
     global directionRotation
+    turnOnMotorWeight(False)
     directionRotation = direction
+    if direction:
+        log("raspberry.directionClosing")
+    else:
+        log("raspberry.directionOpening")
 
 def startProject():
-    global projectIsRunning, countOfTurns
+    global countOfTurns, chegouAoPeso, directionRotation
     countOfTurns = 0
     chegouAoPeso = False
+    log("raspberry.startProject", "success")
+    changeDirectionRotation(True)
     turnOnMotorLap(True)
     turnOnMotorWeight(True)
 
 def stopProject():
-    global projectIsRunning
+    global directionRotation, weight
+    changeDirectionRotation(False)
     turnOnMotorLap(False)
     turnOnMotorWeight(False)
 
-def processar_comando(command, client_socket):
-    global motorWeightTurnOn, motorLapTurnOn, scaleStatus, projectIsRunning
+def processar_comando(command):
+    global motorWeightTurnOn, motorLapTurnOn, projectIsRunning
     try:
         json_data = json.loads(command)
         print("Comando recebido:", json_data)
@@ -144,14 +157,16 @@ def startContaVoltas():
         print("\nEncerrando Conta Voltas...")
 
 def main():
-    global weight, chegouAoPeso, maxWeight
+    global weight, chegouAoPeso, maxWeight, client_socket
     client_socket = esperar_conexao()  # Certificando que a conexão é feita antes de usar o client_socket
+    log("raspberry.raspberryConnected", "success")
     try:
         while True:
             weight = round(hx.get_weight(5) / 1000, 2)
 
             if weight > maxWeight:
                 chegouAoPeso = True
+                log("raspberry.weightIsOk", "success")
                 turnOnMotorWeight(False)
 
             # Criação do JSON com os dados (pode incluir outros sensores aqui)
@@ -159,7 +174,6 @@ def main():
                 "weight": str(weight),
                 "motorWeightTurnOn": motorWeightTurnOn,
                 "motorLapTurnOn": motorLapTurnOn,
-                "scaleStatus": scaleStatus,
                 "countOfTurns": countOfTurns,
                 "projectIsRunning": projectIsRunning,
                 "directionRotation": directionRotation
@@ -176,6 +190,7 @@ def main():
                 print("Tentando reconectar...")
                 client_socket.close()
                 client_socket = esperar_conexao()  # Recriar a conexão com o cliente
+                log("raspberry.raspberryConnected", "success")
 
             # --------------------
             # ESCUTA DOS COMANDOS
@@ -184,7 +199,7 @@ def main():
                 client_socket.settimeout(0.05)  # Timeout para não travar o loop
                 comando = client_socket.recv(1024).decode().strip()
                 if comando:
-                    processar_comando(comando, client_socket)
+                    processar_comando(comando)
             except socket.timeout:
                 # Ignora timeout, continua o loop
                 pass
@@ -193,6 +208,7 @@ def main():
                 print("Tentando reconectar...")
                 client_socket.close()
                 client_socket = esperar_conexao()  # Recriar a conexão com o cliente
+                log("raspberry.raspberryConnected", "success")
 
             time.sleep(0.05)
     except KeyboardInterrupt:
@@ -200,7 +216,7 @@ def main():
     finally:
         client_socket.close()
         server.close()
-        # GPIO.cleanup()
+        GPIO.cleanup()
 
 # Criando e iniciando as threads
 thread_conta_voltas = threading.Thread(target=startContaVoltas)

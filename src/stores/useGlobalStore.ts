@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { i18n } from "../main";
 import type { Log } from "../interfaces/log.interface";
+import GlobalService from "../services/global.service";
 
 export const useGlobalStore = defineStore("global", {
   state: () => ({
@@ -9,12 +10,12 @@ export const useGlobalStore = defineStore("global", {
     motorLapTurnOn: false,
     motorWeightTurnOn: false,
     directionRotation: false,
-    scaleStatus: false,
     weight: 0,
     logs: "",
     loadingStatus: {
       weight: false,
       lap: false,
+      direction: false,
     },
     projectIsRunning: false,
     currentLanguage: "en",
@@ -38,21 +39,23 @@ export const useGlobalStore = defineStore("global", {
     },
     setWifiSelected(value: { ip: string; mac: string; hostname: string }) {
       this.wifiSelected = value;
+      GlobalService.setStorage("config.wifiSelected", value.ip);
     },
     setLoadingStatus(value: boolean) {
       this.loadingStatus = {
         weight: value,
         lap: value,
+        direction: value,
       };
     },
     setLoadingStatusWeight(value: boolean) {
       this.loadingStatus.weight = value;
     },
+    setLoadingStatusDirection(value: boolean) {
+      this.loadingStatus.direction = value;
+    },
     setLoadingStatusTurns(value: boolean) {
       this.loadingStatus.lap = value;
-    },
-    setScaleStatus(value: boolean) {
-      this.scaleStatus = value;
     },
     setProjectIsRunning(value: boolean) {
       this.projectIsRunning = value;
