@@ -13,10 +13,10 @@ let buffer = "";
 app.on("ready", () => {
   mainWindow = new BrowserWindow({
     width: 1000,
-    // maxWidth: 1000,
-    // minWidth: 1000,
-    // maxHeight: 800,
-    // minHeight: 800,
+    maxWidth: 1000,
+    minWidth: 1000,
+    maxHeight: 800,
+    minHeight: 800,
     height: 800,
     webPreferences: {
       preload: path.join(path.resolve(), "preload.js"),
