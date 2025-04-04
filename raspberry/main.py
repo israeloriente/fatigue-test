@@ -117,13 +117,14 @@ def startProject():
     turnOnMotorWeight(True)
 
 def stopProject():
-    global directionRotation, weight
+    global directionRotation, weight, chegouAoPeso
+    chegouAoPeso = False
     changeDirectionRotation(False)
     turnOnMotorLap(False)
     turnOnMotorWeight(False)
 
 def processar_comando(command):
-    global motorWeightTurnOn, motorLapTurnOn, projectIsRunning
+    global motorWeightTurnOn, motorLapTurnOn, projectIsRunning, maxWeight
     try:
         json_data = json.loads(command)
         print("Comando recebido:", json_data)
@@ -139,6 +140,10 @@ def processar_comando(command):
             changeDirectionRotation(json_data["directionRotation"])
         if "motorLapTurnOn" in json_data:
             turnOnMotorLap(json_data["motorLapTurnOn"])
+        if "maxWeight" in json_data:
+            if json_data["maxWeight"] <= 40:
+                maxWeight = json_data["maxWeight"]
+                log("raspberry.maxWeightChanged", "success")
     except json.JSONDecodeError as e:
         print("Erro ao parsear JSON:", e)
 
@@ -165,9 +170,10 @@ def main():
             weight = round(hx.get_weight(5) / 1000, 2)
 
             if weight > maxWeight:
+                if (not chegouAoPeso):
+                    log("raspberry.weightIsOk", "success")
+                    turnOnMotorWeight(False)
                 chegouAoPeso = True
-                log("raspberry.weightIsOk", "success")
-                turnOnMotorWeight(False)
 
             # Criação do JSON com os dados (pode incluir outros sensores aqui)
             data = {
@@ -176,7 +182,9 @@ def main():
                 "motorLapTurnOn": motorLapTurnOn,
                 "countOfTurns": countOfTurns,
                 "projectIsRunning": projectIsRunning,
-                "directionRotation": directionRotation
+                "directionRotation": directionRotation,
+                "chegouAoPeso": chegouAoPeso,
+                "maxWeight": maxWeight
             }
 
             # Converte o dicionário em JSON
