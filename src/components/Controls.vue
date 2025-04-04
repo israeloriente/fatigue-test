@@ -53,7 +53,7 @@ const motorGiroChanged = (value: boolean) => {
         GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
       }
       globalStore.setLoadingStatusTurns(false);
-    }, 500);
+    }, 1000);
   } else {
     window.socket.writeSocket({ motorLapTurnOn: false });
     globalStore.setLoadingStatusTurns(true);
@@ -63,7 +63,7 @@ const motorGiroChanged = (value: boolean) => {
         GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
       }
       globalStore.setLoadingStatusTurns(false);
-    }, 500);
+    }, 1000);
   }
 };
 
@@ -77,7 +77,7 @@ const motorWeightChanged = (value: boolean) => {
         GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
       }
       globalStore.setLoadingStatusWeight(false);
-    }, 500);
+    }, 1000);
   } else {
     window.socket.writeSocket({ motorWeightTurnOn: false });
     globalStore.setLoadingStatusWeight(true);
@@ -87,7 +87,7 @@ const motorWeightChanged = (value: boolean) => {
         GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
       }
       globalStore.setLoadingStatusWeight(false);
-    }, 500);
+    }, 1000);
   }
 };
 
@@ -101,7 +101,7 @@ const directionRotationChanged = (value: boolean) => {
         GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
       }
       globalStore.setLoadingStatusDirection(false);
-    }, 500);
+    }, 1000);
   } else {
     window.socket.writeSocket({ directionRotation: false });
     globalStore.setLoadingStatusDirection(true);
@@ -111,7 +111,7 @@ const directionRotationChanged = (value: boolean) => {
         GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
       }
       globalStore.setLoadingStatusDirection(false);
-    }, 500);
+    }, 1000);
   }
 };
 

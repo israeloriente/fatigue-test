@@ -9,6 +9,12 @@
       "text": "Please verify the connection of the Arduino",
       "icon": "error",
       "confirmButtonText": "Ok"
+    },
+    "maxWeight": {
+      "title": "Maximum load reached",
+      "text": "The maximum load has been reached, please place a weight less than 40kg",
+      "icon": "error",
+      "confirmButtonText": "Ok"
     }
   },
   "simpleToast": {
@@ -25,7 +31,8 @@
     "motorLapTurnedOff": "Stepper Motor Turned Off",
     "directionOpening": "Loosening direction of the charging motor",
     "directionClosing": "Tightening direction of the charging motor",
-    "weightIsOk": "Weight reached the desired value"
+    "weightIsOk": "Weight reached the desired value",
+    "maxWeightChanged": "Maximum weight changed"
   },
   "toolbar": {
     "home": "Home",
@@ -44,21 +51,21 @@
     "inputData": {
       "title": "Input Data",
       "inputSut": "Sut of the specimen (MPa)",
-      "inputLoad": "Applied load (MPa)"
+      "inputLoad": "Applied load (Kg)"
     },
     "startButton": "Start",
     "abortButton": "Abort",
     "controls": {
       "directionRotation": "Direction rotation (Tightening)",
-      "motorLap": "Stepper motor",
-      "motorWeight": "Load cell motor"
+      "motorLap": "Rotation",
+      "motorWeight": "Load cell"
     },
     "status": {
       "title": "Status",
       "raspberry": " Device",
       "direction": " Direction (Tightening)",
-      "motorLap": " Stepper motor",
-      "motorWeight": " Load cell motor"
+      "motorLap": " Rotation",
+      "motorWeight": " Load cell"
     },
     "results": {
       "title": "Results",

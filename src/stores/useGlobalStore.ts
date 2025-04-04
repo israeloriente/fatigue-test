@@ -11,6 +11,7 @@ export const useGlobalStore = defineStore("global", {
     motorWeightTurnOn: false,
     directionRotation: false,
     weight: 0,
+    maxWeight: 5,
     logs: "",
     loadingStatus: {
       weight: false,
@@ -18,6 +19,7 @@ export const useGlobalStore = defineStore("global", {
       direction: false,
     },
     projectIsRunning: false,
+    chegouAoPeso: false,
     currentLanguage: "en",
   }),
 
@@ -62,6 +64,12 @@ export const useGlobalStore = defineStore("global", {
     },
     setDirectionRotation(value: boolean) {
       this.directionRotation = value;
+    },
+    setChegouAoPeso(value: boolean) {
+      this.chegouAoPeso = value;
+    },
+    setMaxWeight(value: number) {
+      this.maxWeight = value;
     },
     changeLanguage(language: "en" | "pt") {
       this.currentLanguage = language;

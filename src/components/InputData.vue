@@ -6,7 +6,7 @@
       type="text"
       class="form-control"
       v-model="sutCorpo"
-      placeholder="150"
+      placeholder="280"
       aria-describedby="basic-addon1"
       v-on:focusout="saveSutCorpoOnStorage"
     />
@@ -17,7 +17,7 @@
       type="text"
       class="form-control"
       v-model="cargaAplicada"
-      placeholder="150"
+      placeholder="10"
       aria-describedby="basic-addon1"
       v-on:focusout="saveCargaAplicadaOnStorage"
     />
@@ -27,6 +27,9 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import GlobalService from "../services/global.service";
+import { useGlobalStore } from "../stores/useGlobalStore";
+
+const globalStore = useGlobalStore();
 
 const sutCorpo = ref<string>("");
 const cargaAplicada = ref<string>("");
@@ -36,7 +39,18 @@ const saveSutCorpoOnStorage = (ev: any) => {
 };
 
 const saveCargaAplicadaOnStorage = (ev: any) => {
-  GlobalService.setStorage("config.defaultCargaAplicada", ev.target.value);
+  if (ev.target.value === "") return;
+  const value = parseFloat(ev.target.value);
+  if (value > 40) {
+    GlobalService.simpleAlert("simpleAlert.maxWeight");
+    return;
+  }
+  window.socket.writeSocket({ maxWeight: value });
+  setTimeout(() => {
+    if (globalStore.maxWeight !== value) {
+      GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
+    } else GlobalService.setStorage("config.defaultCargaAplicada", ev.target.value);
+  }, 1000);
 };
 
 onMounted(() => {

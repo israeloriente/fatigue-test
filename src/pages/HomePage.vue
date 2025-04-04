@@ -79,7 +79,7 @@ const start = async () => {
       GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
     }
     globalStore.setLoadingStatus(false);
-  }, 500);
+  }, 1000);
 };
 
 const abort = async () => {
@@ -90,19 +90,23 @@ const abort = async () => {
       GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
     }
     globalStore.setLoadingStatus(false);
-  }, 500);
+  }, 1500);
 };
 
 const setupSocketHandlers = () => {
   socketDataHandler = (data: any) => {
     if (!data.isLog) {
-      console.log(data);
+      // console.log(data);
       globalStore.setWeight(data.weight);
       globalStore.setCountOfTurns(data.countOfTurns);
       globalStore.setMotorLapTurnOn(data.motorLapTurnOn);
       globalStore.setMotorWeightTurnOn(data.motorWeightTurnOn);
       globalStore.setProjectIsRunning(data.projectIsRunning);
       globalStore.setDirectionRotation(data.directionRotation);
+      globalStore.setMaxWeight(data.maxWeight);
+      if (data.chegouAoPeso !== globalStore.chegouAoPeso) {
+        globalStore.setChegouAoPeso(data.chegouAoPeso);
+      }
     } else {
       globalStore.addLog(data);
     }

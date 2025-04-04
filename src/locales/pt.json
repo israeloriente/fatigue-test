@@ -9,6 +9,12 @@
       "text": "Por favor, verifique a conexão do Arduino",
       "icon": "error",
       "confirmButtonText": "Ok"
+    },
+    "maxWeight": {
+      "title": "Carga máxima atingida",
+      "text": "A carga máxima foi atingida, por favor, coloque o peso menor que 40kg",
+      "icon": "error",
+      "confirmButtonText": "Ok"
     }
   },
   "simpleToast": {
@@ -24,7 +30,8 @@
     "motorLapTurnedOff": "Motor de giro desligado",
     "directionOpening": "Direção de afrouxamento do motor de carga",
     "directionClosing": "Direção de aperto do motor de carga",
-    "weightIsOk": "Peso chegou ao valor desejado"
+    "weightIsOk": "Peso chegou ao valor desejado",
+    "maxWeightChanged": "Peso máximo alterado"
   },
   "toolbar": {
     "home": "Início",
@@ -43,21 +50,21 @@
     "inputData": {
       "title": "Dados de entrada",
       "inputSut": "Sut do corpo de prova (MPa)",
-      "inputLoad": "Carga aplicada (MPa)"
+      "inputLoad": "Carga aplicada (Kg)"
     },
     "startButton": "Começar",
     "abortButton": "Abortar",
     "controls": {
       "directionRotation": "Direção de rotação (Apertando)",
-      "motorLap": "Motor de giro",
-      "motorWeight": "Motor de carga"
+      "motorLap": "Rotação",
+      "motorWeight": "Carga"
     },
     "status": {
       "title": "Status",
       "raspberry": " Dispositivo",
       "direction": " Direção (Apertando)",
-      "motorLap": " Motor de giro",
-      "motorWeight": " Motor de carga"
+      "motorLap": " Rotação",
+      "motorWeight": " Carga"
     },
     "results": {
       "title": "Resultados",

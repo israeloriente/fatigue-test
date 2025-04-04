@@ -8,7 +8,7 @@
       </li>
       <li class="item list-group-item d-flex justify-content-between align-items-center">
         <span class="label">{{ $t("home.results.testDuration") }}</span>
-        <span>0</span>
+        <StopWatchComponent ref="stopWatchRef" />
       </li>
       <li class="item list-group-item d-flex justify-content-between align-items-center">
         <span class="label">{{ $t("home.results.life") }}</span>
@@ -27,9 +27,32 @@
 </template>
 
 <script setup lang="ts">
+import { ref, watch } from "vue";
 import { useGlobalStore } from "../stores/useGlobalStore";
+import StopWatchComponent from "./StopWatchComponent.vue";
 
 const globalStore = useGlobalStore();
+const stopWatchRef = ref();
+
+watch(
+  () => globalStore.chegouAoPeso,
+  (newValue) => {
+    console.log("chegouAoPeso", newValue);
+    if (newValue && globalStore.projectIsRunning) {
+      stopWatchRef.value.init(new Date(), undefined, true);
+    }
+  },
+  { immediate: false }
+);
+watch(
+  () => globalStore.projectIsRunning,
+  (newValue) => {
+    if (newValue) {
+      stopWatchRef.value.timerDisplay = "00:00:00";
+    } else stopWatchRef.value.stopCount();
+  },
+  { immediate: false }
+);
 </script>
 
 <style scoped lang="scss">
