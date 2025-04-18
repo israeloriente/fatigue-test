@@ -12,6 +12,8 @@ export const useGlobalStore = defineStore("global", {
     directionRotation: false,
     weight: 0,
     maxWeight: 5,
+    speedRotation: 0,
+    tensaoFalha: 0,
     logs: "",
     loadingStatus: {
       weight: false,
@@ -31,7 +33,7 @@ export const useGlobalStore = defineStore("global", {
       this.countOfTurns = value;
     },
     setWeight(value: number) {
-      this.weight = Math.abs(value);
+      this.weight = parseFloat((value * 9.81).toFixed(2));
     },
     setMotorLapTurnOn(value: boolean) {
       this.motorLapTurnOn = value;
@@ -70,6 +72,12 @@ export const useGlobalStore = defineStore("global", {
     },
     setMaxWeight(value: number) {
       this.maxWeight = value;
+    },
+    setSpeedRotation(value: number) {
+      this.speedRotation = parseInt(value.toString());
+    },
+    setTensaoFalha(value: number) {
+      this.tensaoFalha = value;
     },
     changeLanguage(language: "en" | "pt") {
       this.currentLanguage = language;

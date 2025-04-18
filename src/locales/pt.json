@@ -12,7 +12,7 @@
     },
     "maxWeight": {
       "title": "Carga máxima atingida",
-      "text": "A carga máxima foi atingida, por favor, coloque o peso menor que 40kg",
+      "text": "A carga máxima foi atingida, por favor, coloque o valor menor igual a 500 N",
       "icon": "error",
       "confirmButtonText": "Ok"
     }
@@ -70,14 +70,14 @@
       "title": "Resultados",
       "theoreticalLife": "Vida teórica",
       "testDuration": "Duração do ensaio",
-      "life": "Vida",
+      "speedRotation": "Rotação por minuto (RPM)",
       "error": "Erro",
-      "turnCount": "Contagem de voltas"
+      "turnCount": "Vida Real"
     },
     "chart": {
       "label": "Gráfico (N)",
       "scalesX": "Contagem de voltas",
-      "scalesY": "Newton (N)"
+      "scalesY": "Tensão de falha (MPa)"
     }
   },
   "about": {},

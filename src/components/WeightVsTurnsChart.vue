@@ -73,7 +73,7 @@ const getscalesY = computed(() => {
 });
 
 watch(
-  () => globalStore.weight,
+  () => globalStore.tensaoFalha,
   (newValue) => {
     chartInstance.data.datasets[0].data.push(newValue);
     if (chartInstance.data.labels) chartInstance.data.labels.push(globalStore.countOfTurns);

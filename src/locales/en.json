@@ -12,7 +12,7 @@
     },
     "maxWeight": {
       "title": "Maximum load reached",
-      "text": "The maximum load has been reached, please place a weight less than 40kg",
+      "text": "The maximum load has been reached, please place a weight less or equal than 500 N",
       "icon": "error",
       "confirmButtonText": "Ok"
     }
@@ -71,14 +71,14 @@
       "title": "Results",
       "theoreticalLife": "Theoretical life",
       "testDuration": "Test duration",
-      "life": "Life",
+      "speedRotation": "Rotarion per minute (RPM)",
       "error": "Error",
-      "turnCount": "Number of turns"
+      "turnCount": "Real Life"
     },
     "chart": {
       "label": "Chart (N)",
       "scalesX": "Turn Count",
-      "scalesY": "Newton (N)"
+      "scalesY": "Failure Stress (MPa)"
     }
   },
   "about": {},

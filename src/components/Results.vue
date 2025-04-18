@@ -11,8 +11,8 @@
         <StopWatchComponent ref="stopWatchRef" />
       </li>
       <li class="item list-group-item d-flex justify-content-between align-items-center">
-        <span class="label">{{ $t("home.results.life") }}</span>
-        <span>0</span>
+        <span class="label">{{ $t("home.results.speedRotation") }}</span>
+        <span>{{ globalStore.speedRotation }}</span>
       </li>
       <li class="item list-group-item d-flex justify-content-between align-items-center">
         <span class="label">{{ $t("home.results.error") }}</span>
@@ -37,7 +37,6 @@ const stopWatchRef = ref();
 watch(
   () => globalStore.chegouAoPeso,
   (newValue) => {
-    console.log("chegouAoPeso", newValue);
     if (newValue && globalStore.projectIsRunning) {
       stopWatchRef.value.init(new Date(), undefined, true);
     }
@@ -50,6 +49,29 @@ watch(
     if (newValue) {
       stopWatchRef.value.timerDisplay = "00:00:00";
     } else stopWatchRef.value.stopCount();
+  },
+  { immediate: false }
+);
+watch(
+  () => globalStore.countOfTurns,
+  (newValue) => {
+    const tensaoUltima = 280;
+    const fFatorFadiga = 0.9;
+    const diametroCritico = 11;
+    const kc = 1;
+    const kd = 1;
+    const ke = 1;
+    const ka = 4.51 * tensaoUltima ** -0.265;
+    const kb = Math.pow(diametroCritico / 7.62, -0.107);
+    const se1 = 0.504 * tensaoUltima;
+    const se = ka * kb * kc * kd * ke * se1;
+    const a1 = Math.pow(fFatorFadiga * tensaoUltima, 2) / se;
+    const b1 = -(1 / 3) * Math.log10((fFatorFadiga * tensaoUltima) / se);
+
+    let contaVoltas = newValue;
+    let tensaoFalha = a1 * contaVoltas ** b1;
+
+    globalStore.setTensaoFalha(tensaoFalha);
   },
   { immediate: false }
 );

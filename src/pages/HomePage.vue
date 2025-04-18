@@ -104,6 +104,7 @@ const setupSocketHandlers = () => {
       globalStore.setProjectIsRunning(data.projectIsRunning);
       globalStore.setDirectionRotation(data.directionRotation);
       globalStore.setMaxWeight(data.maxWeight);
+      globalStore.setSpeedRotation(data.speedRotation);
       if (data.chegouAoPeso !== globalStore.chegouAoPeso) {
         globalStore.setChegouAoPeso(data.chegouAoPeso);
       }

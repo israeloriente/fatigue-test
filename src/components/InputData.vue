@@ -41,7 +41,7 @@ const saveSutCorpoOnStorage = (ev: any) => {
 const saveCargaAplicadaOnStorage = (ev: any) => {
   if (ev.target.value === "") return;
   const value = parseFloat(ev.target.value);
-  if (value > 40 * 9.81) {
+  if (value > 50 * 10) {
     GlobalService.simpleAlert("simpleAlert.maxWeight");
     return;
   }
