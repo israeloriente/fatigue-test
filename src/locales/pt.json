@@ -50,7 +50,7 @@
     "inputData": {
       "title": "Dados de entrada",
       "inputSut": "Sut do corpo de prova (MPa)",
-      "inputLoad": "Carga aplicada (Kg)"
+      "inputLoad": "Carga aplicada (N)"
     },
     "startButton": "Começar",
     "abortButton": "Abortar",
@@ -75,9 +75,9 @@
       "turnCount": "Contagem de voltas"
     },
     "chart": {
-      "label": "Peso (kg)",
+      "label": "Gráfico (N)",
       "scalesX": "Contagem de voltas",
-      "scalesY": "Peso (kg)"
+      "scalesY": "Newton (N)"
     }
   },
   "about": {},

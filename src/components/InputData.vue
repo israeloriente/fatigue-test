@@ -41,13 +41,13 @@ const saveSutCorpoOnStorage = (ev: any) => {
 const saveCargaAplicadaOnStorage = (ev: any) => {
   if (ev.target.value === "") return;
   const value = parseFloat(ev.target.value);
-  if (value > 40) {
+  if (value > 40 * 9.81) {
     GlobalService.simpleAlert("simpleAlert.maxWeight");
     return;
   }
-  window.socket.writeSocket({ maxWeight: value });
+  window.socket.writeSocket({ maxWeight: value / 9.81 });
   setTimeout(() => {
-    if (globalStore.maxWeight !== value) {
+    if (globalStore.maxWeight !== value / 9.81) {
       GlobalService.simpleAlert("simpleAlert.raspberryNotConnected");
     } else GlobalService.setStorage("config.defaultCargaAplicada", ev.target.value);
   }, 1000);

@@ -51,7 +51,7 @@
     "inputData": {
       "title": "Input Data",
       "inputSut": "Sut of the specimen (MPa)",
-      "inputLoad": "Applied load (Kg)"
+      "inputLoad": "Applied load (N)"
     },
     "startButton": "Start",
     "abortButton": "Abort",
@@ -76,9 +76,9 @@
       "turnCount": "Number of turns"
     },
     "chart": {
-      "label": "Weight (kg)",
+      "label": "Chart (N)",
       "scalesX": "Turn Count",
-      "scalesY": "Weight (kg)"
+      "scalesY": "Newton (N)"
     }
   },
   "about": {},

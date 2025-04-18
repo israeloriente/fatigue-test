@@ -12,7 +12,7 @@ client_socket = None
 projectIsRunning = False
 chegouAoPeso = False
 weight = 0.0
-maxWeight = 5
+maxWeight = 5 * 9.81
 motorWeightTurnOn = False
 motorLapPin = 2
 motorLapTurnOn = False
@@ -141,7 +141,7 @@ def processar_comando(command):
         if "motorLapTurnOn" in json_data:
             turnOnMotorLap(json_data["motorLapTurnOn"])
         if "maxWeight" in json_data:
-            if json_data["maxWeight"] <= 40:
+            if json_data["maxWeight"] <= (40 * 9.81):
                 maxWeight = json_data["maxWeight"]
                 log("raspberry.maxWeightChanged", "success")
     except json.JSONDecodeError as e:
@@ -167,7 +167,7 @@ def main():
     log("raspberry.raspberryConnected", "success")
     try:
         while True:
-            weight = round(hx.get_weight(5) / 1000, 2)
+            weight = round((hx.get_weight(5) / 1000) * 9.81, 2)
 
             if weight > maxWeight:
                 if (not chegouAoPeso):

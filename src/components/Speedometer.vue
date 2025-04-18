@@ -20,9 +20,9 @@ const _speedValueInNumeric = ref(null);
 const _speedNobNumbHolder = ref([]);
 const _speedometerProperty = ref({
   id: "speedometer-cnt-" + Math.floor(Math.random() * 100000) + 1,
-  maxVal: 50,
-  divFact: 5,
-  dangerLevel: 40,
+  maxVal: 50 * 10,
+  divFact: 5 * 10,
+  dangerLevel: 40 * 10,
   initDeg: -45,
   maxDeg: 270,
   speedNobeH: 4,
@@ -40,7 +40,7 @@ const _speedometerProperty = ref({
   midNobH: 3,
   noOfSmallDiv: 2,
   multiplier: 1,
-  gagueLabel: "kg",
+  gagueLabel: "N",
   initVal: 0,
   dangerColor: "#FF113A",
   bgColor: "#0F0F0F",
