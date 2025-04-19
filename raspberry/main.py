@@ -4,7 +4,6 @@ import time
 import json
 import threading
 from hx711 import HX711
-import arrow
 
 GPIO.setmode(GPIO.BCM)
 
@@ -21,7 +20,6 @@ countOfTurnsPin = 17
 countOfTurnsIsBlocked = False
 countOfTurns = 0
 directionRotation = False
-speedRotation = 0 # Seconds
 # Motor De passo #
 DIR_PIN = 20     # Pino GPIO para controle de direção
 STEP_PIN = 21    # Pino GPIO para envio de pulsos
@@ -143,26 +141,19 @@ def processar_comando(command):
         if "motorLapTurnOn" in json_data:
             turnOnMotorLap(json_data["motorLapTurnOn"])
         if "maxWeight" in json_data:
-            if json_data["maxWeight"] <= (50 * 9.81):
+            if json_data["maxWeight"] <= (40 * 9.81):
                 maxWeight = json_data["maxWeight"]
                 log("raspberry.maxWeightChanged", "success")
     except json.JSONDecodeError as e:
         print("Erro ao parsear JSON:", e)
 
 def startContaVoltas():
-    global countOfTurns, countOfTurnsIsBlocked, chegouAoPeso, speedRotation
-    lastDate = arrow.now()
-    speedRotationArray = []
+    global countOfTurns, countOfTurnsIsBlocked, chegouAoPeso
     try:
         while True:
             sensor_state = GPIO.input(countOfTurnsPin)
             if sensor_state == GPIO.HIGH and not countOfTurnsIsBlocked and projectIsRunning and chegouAoPeso:
                 countOfTurns += 1
-                currentDate = arrow.now()
-                time_difference = currentDate - lastDate
-                speedRotationArray.append((1 / time_difference.total_seconds()) * 60)
-                speedRotation = sum(speedRotationArray) / len(speedRotationArray)
-                lastDate = currentDate
                 countOfTurnsIsBlocked = True
             if sensor_state == GPIO.LOW:
                 countOfTurnsIsBlocked = False
@@ -171,13 +162,12 @@ def startContaVoltas():
         print("\nEncerrando Conta Voltas...")
 
 def main():
-    global weight, chegouAoPeso, maxWeight, client_socket, speedRotation
+    global weight, chegouAoPeso, maxWeight, client_socket
     client_socket = esperar_conexao()  # Certificando que a conexão é feita antes de usar o client_socket
     log("raspberry.raspberryConnected", "success")
-    turnOnMotorLap(False)
     try:
         while True:
-            weight = round(hx.get_weight(5) / 1000, 2)
+            weight = round((hx.get_weight(5) / 1000) * 9.81, 2)
 
             if weight > maxWeight:
                 if (not chegouAoPeso):
@@ -194,8 +184,7 @@ def main():
                 "projectIsRunning": projectIsRunning,
                 "directionRotation": directionRotation,
                 "chegouAoPeso": chegouAoPeso,
-                "maxWeight": maxWeight,
-                "speedRotation": speedRotation
+                "maxWeight": maxWeight
             }
 
             # Converte o dicionário em JSON
