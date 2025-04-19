@@ -41,6 +41,8 @@ GPIO.setup(DIR_PIN, GPIO.OUT)
 GPIO.setup(STEP_PIN, GPIO.OUT)
 GPIO.setup(ENABLE_PIN, GPIO.OUT)
 
+GPIO.output(motorLapPin, GPIO.HIGH)
+
 # Configuração do Servidor TCP
 HOST = '0.0.0.0'  # Aceita conexões de qualquer IP
 PORT = 8080       # Porta de comunicação
